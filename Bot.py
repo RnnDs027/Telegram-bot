@@ -91,19 +91,12 @@ def registro_de_compra(compra_msg):
 
     elif escolha == "2":
         item_pedido = "Fertilizantes"
-    
-    texto_para_salvar = f"Pedido de compra: {item_pedido}"
-
     sql = """
-        INSERT INTO user_notes (user_id, note_text)
-        VALUES (%s, %s)
-        ON DUPLICATE KEY UPDATE note_text = %s
-    """
-    valores = (user_id, texto_para_salvar, texto_para_salvar)
-
-    cursor.execute(sql, valores)
+          INSERT INTO pedidos_compra (user_id, categoria_item)
+          VALUES (%s,%s)
+          """
+    Valores = (user_id, item_pedido)
+    cursor.execute(sql, Valores)
     db.commit()
-    bot.reply_to(compra_msg, f"✅ Pedido de compra para '{item_pedido}' registrado!")
-
-
+    bot.reply_to(compra_msg,f"Pedido de compra para '{item_pedido}'")
 bot.polling()
