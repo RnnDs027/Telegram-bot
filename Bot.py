@@ -10,15 +10,15 @@ db_port = os.environ.get('MYSQLPORT')
 
 try:
    db = mysql.connector.connect(
-      host=db_host
-      user=db_user
-      password=db_password
-      database=db_name
-      port=int(db_port)
-
-    cursor = db.cursor()
-
+      host=db_host,
+      user=db_user,
+      password=db_password,
+      database=db_name,
+      port=int(db_port),
    )
+   
+   cursor = db.cursor()
+
 except mysql.connector.Error as err:
   print(f"Erro ao conectar ao MySQL: {erro}")
 except Exception as e:
