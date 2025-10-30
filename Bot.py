@@ -17,7 +17,7 @@ try:
       port=int(db_port),
    )
    
-   cursor = db.cursor()
+    cursor = db.cursor()
 
 except mysql.connector.Error as err:
   print(f"Erro ao conectar ao MySQL: {erro}")
@@ -36,17 +36,22 @@ bot = telebot.TeleBot(TOKEN)
 def save_note(message):
     user_id = message.from_user.id
     parts = message.text.split(maxsplit=1)
-    sql = """
-    INSERT INTO user_notes (user_id,note_text)
-    VALUES(%s, %s)
-    ON DUPLICATE KEY UPDATE note_text = %s
-
-    """
+    if len(parts) > 1:
+        text_to_save = parts[1].strip()
+        sql = """
+        INSERT INTO user_notes (user_id,note_text)
+        VALUES(%s, %s)
+        ON DUPLICATE KEY UPDATE note_text = %s
+        """
     valores = (user_id , text_to_save, text_to_save)
-    cursor.execute(sql,valores)
-    db.commit()
-
-bot.reply_to(message,f"Salvo '{text_to_save}'")
+    try:
+     cursor.execute(sql,valores)
+     db.commit()
+     bot.reply_to(message,f"Salvo '{text_to_save}'")
+    except Exception as e:
+     bot.reply_to(message, f"Erro ao salvar no banco: {e}")
+    else:
+        bot.reply_to(message, "Use /salvar <texto para salvar>")
 
 @bot.message_handler(func=lambda message: True)
 def resposta(message):
