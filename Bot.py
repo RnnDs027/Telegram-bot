@@ -82,7 +82,7 @@ def processamento_da_consulta(pda):
     bot.register_next_step_handler(msg_compra, registro_de_compra)
 
 def registro_de_compra(compra_msg):
-    user_id = compra_msg.from_user.id
+    user_id = str(compra_msg.from_user.id)
     escolha = compra_msg.text.strip()
     item_pedido = ""
 
