@@ -24,7 +24,7 @@ except Exception as e:
     print(f"Ocorreu um erro inesperado: {e}")
 
 
-TOKEN = "8051534131:AAGfxoboyj6vJv59l3fWHX0oFvqAAPI7jww"
+TOKEN = os.environ.get("BOT_TOKEN")
 
 if not TOKEN:
    print("ERRO: BOT_TOKEN não encontrado nas variáveis de ambiente! ")
