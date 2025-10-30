@@ -33,17 +33,17 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['salvar'])
 def save_note(message):
-   user_id = message.from_user.id
-   parts = message.text.split(maxsplit=1)
-   sql = """
-          INSERT INTO user_notes (user_id,note_text)
-          VALUES(%s, %s)
-          ON DUPLICATE KEY UPDATE note_text = %s
+    user_id = message.from_user.id
+    parts = message.text.split(maxsplit=1)
+    sql = """
+    INSERT INTO user_notes (user_id,note_text)
+    VALUES(%s, %s)
+    ON DUPLICATE KEY UPDATE note_text = %s
 
-          """
-     valores = (user_id , text_to_save, text_to_save)
-     cursor.execute(sql,valores)
-     db.commit()
+    """
+    valores = (user_id , text_to_save, text_to_save)
+    cursor.execute(sql,valores)
+    db.commit()
 
 bot.reply_to(message,f"Salvo '{text_to_save}'")
 
