@@ -16,8 +16,7 @@ try:
       database=db_name,
       port=int(db_port),
    )
-   
-    cursor = db.cursor()
+   cursor = db.cursor()
 
 except mysql.connector.Error as err:
   print(f"Erro ao conectar ao MySQL: {erro}")
