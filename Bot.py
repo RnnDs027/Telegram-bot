@@ -42,7 +42,6 @@ def save_note(message):
 
           """
      valores = (user_id , text_to_save, text_to_save)
-
      cursor.execute(sql,valores)
      db.commit()
 
