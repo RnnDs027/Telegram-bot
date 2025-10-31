@@ -82,21 +82,67 @@ def processamento_da_consulta(pda):
     bot.register_next_step_handler(msg_compra, registro_de_compra)
 
 def registro_de_compra(compra_msg):
+    global db, cursor
     user_id = str(compra_msg.from_user.id)
     escolha = compra_msg.text.strip()
-    item_pedido = ""
+    escolha_EPI = ""
 
     if escolha == "1":
-        item_pedido = "EPI"
+        escolha_EPI = compra_msg.text.strip()
+        bot.reply_to(compra_msg,"Escolha um numero \n" \
+        "1 ---- Capacete\n" \
+        "2 ---- Luva \n" \
+        "3 ---- Butina\n" \
+        "4 ---- Protetor uricular\n" \
+        "5 ---- Oculos\n")
+        bot.register_next_step_handler(compra_msg, processar_compra, user_id) 
 
-    elif escolha == "2":
+    if escolha == "2":
         item_pedido = "Fertilizantes"
+
+
+def processar_compra(compra_msg,user_id):
+    global db, cursor
+    user_id = str(compra_msg.from_user.id)
+    escolha_EPI = compra_msg.text.strip()
+
+    if escolha_EPI == "1":
+     escolha_EPI = "Capacete"          
+
+    elif escolha_EPI == "2":
+        escolha_EPI = "Luva"
+
+    elif escolha_EPI == "3":
+        escolha_EPI = "Butina"
+      
+    elif escolha_EPI == "4":
+        escolha_EPI = "Protetor uricular"
+
+    elif escolha_EPI == "5":
+        escolha_EPI = "Oculos"
+
     sql = """
-          INSERT INTO pedidos_compra (user_id, categoria_item)
-          VALUES (%s,%s)
-          """
-    Valores = (user_id, item_pedido)
+        INSERT INTO pedidos_compra (user_id, categoria_item)
+        VALUES (%s,%s)
+        """
+    Valores = (user_id, escolha_EPI)
     cursor.execute(sql, Valores)
     db.commit()
-    bot.reply_to(compra_msg,f"Pedido de compra para '{item_pedido}'")
+    bot.reply_to(compra_msg,f"Pedido de compra para '{escolha_EPI} finalizado com sucesso'")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bot.polling()
+
