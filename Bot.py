@@ -17,12 +17,14 @@ try:
       port=int(db_port),
    )
    cursor = db.cursor()
+   print("--- CONEXÃO COM O BANCO DE DADOS FOI UM SUCESSO! O cursor foi criado. ---")
 
 except mysql.connector.Error as err:
-  print(f"Erro ao conectar ao MySQL: {erro}")
+    print(f"Erro ao conectar ao MySQL: {err}") 
+    print("--- FALHA NA CONEXÃO! O cursor NÃO foi criado! ---") # <--- ADICIONE ISSO
 except Exception as e:
     print(f"Ocorreu um erro inesperado: {e}")
-
+    print("--- FALHA NA CONEXÃO! O cursor NÃO foi criado! ---")
 
 TOKEN = os.environ.get("BOT_TOKEN")
 
@@ -53,7 +55,7 @@ def save_note(message):
         bot.reply_to(message, "Use /salvar <texto para salvar>")
 
 @bot.message_handler(func=lambda message: True)
-def resposta(message):
+def primeira_pergunta_bot(message):
     chat_id = message.chat.id
     bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um numero\n" \
@@ -62,9 +64,9 @@ def resposta(message):
     
     
     
-    bot.register_next_step_handler(msg,processamento_da_consulta)
+    bot.register_next_step_handler(msg,escolha_de_avanço)
 
-def processamento_da_consulta(pda):
+def escolha_de_avanço(pda):
     texto = pda.text.lower()
     chat_id = pda.chat.id
 
@@ -79,9 +81,9 @@ def processamento_da_consulta(pda):
        msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
         " 1 ---- EPI \n" \
         " 2 ---- Fertilizantes\n")
-    bot.register_next_step_handler(msg_compra, registro_de_compra)
+    bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
 
-def registro_de_compra(compra_msg):
+def registro_de_compra_epi(compra_msg):
     global db, cursor
     user_id = str(compra_msg.from_user.id)
     escolha = compra_msg.text.strip()
@@ -95,42 +97,48 @@ def registro_de_compra(compra_msg):
         "3 ---- Butina\n" \
         "4 ---- Protetor uricular\n" \
         "5 ---- Oculos\n")
-        bot.register_next_step_handler(compra_msg, processar_compra, user_id) 
+        bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
 
     if escolha == "2":
         item_pedido = "Fertilizantes"
+    
+def quantidade_epi(compra_msg,user_id):
+   global db, cursor
+   Escolha_epi = compra_msg.text.strip() 
+   bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+   bot.register_next_step_handler(compra_msg,processar_compra_epi,Escolha_epi,user_id)
 
 
-def processar_compra(compra_msg,user_id):
+def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
-    user_id = str(compra_msg.from_user.id)
-    escolha_EPI = compra_msg.text.strip()
+    quantidade = quantidade_msg.text.strip()
 
-    if escolha_EPI == "1":
-     escolha_EPI = "Capacete"          
+    if Escolha_epi == "1":
+     Escolha_epi = "Capacete"          
 
-    elif escolha_EPI == "2":
-        escolha_EPI = "Luva"
+    elif Escolha_epi == "2":
+        Escolha_epi = "Luva"
 
-    elif escolha_EPI == "3":
-        escolha_EPI = "Butina"
+    elif Escolha_epi == "3":
+        Escolha_epi = "Butina"
       
-    elif escolha_EPI == "4":
-        escolha_EPI = "Protetor uricular"
+    elif Escolha_epi == "4":
+        Escolha_epi = "Protetor uricular"
 
-    elif escolha_EPI == "5":
-        escolha_EPI = "Oculos"
+    elif Escolha_epi == "5":
+        Escolha_epi = "Oculos"
 
     sql = """
-        INSERT INTO pedidos_compra (user_id, categoria_item)
-        VALUES (%s,%s)
+        INSERT INTO pedidos_compras (user_id, categoria_item,quantidade)
+        VALUES (%s,%s,%s)
         """
-    Valores = (user_id, escolha_EPI)
+    Valores = (user_id, Escolha_epi,quantidade)
     cursor.execute(sql, Valores)
     db.commit()
-    bot.reply_to(compra_msg,f"Pedido de compra para '{escolha_EPI} finalizado com sucesso'")
+    bot.reply_to(quantidade_msg,f"Pedido de compra para '{Escolha_epi} finalizado com sucesso'")
 
 
+   
 
 
 
