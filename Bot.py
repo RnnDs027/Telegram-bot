@@ -96,7 +96,7 @@ def consulta_epi(msg):
             codigo_item = linha[0]
             categoria_item = linha[2]
             quantidade = linha[3]
-            resposta = resposta + (f"Id usuario - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
    elif escolha_qual_consulta == "2":
        print("CRIANDO AINDA")
@@ -170,4 +170,3 @@ def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
 
 
 bot.polling()
-
