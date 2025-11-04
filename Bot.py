@@ -93,13 +93,14 @@ def consulta_epi(msg):
         registros = cursor.fetchall()
         resposta = ("*Itens cadastrados no banco de dados*\n\n")
         for linha in registros:
-            user_id = linha[0]
-            categoria_item = linha[1]
-            quantidade = linha[2]
-            resposta = resposta + (f"Id usuario - {user_id}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+            codigo_item = linha[0]
+            categoria_item = linha[2]
+            quantidade = linha[3]
+            resposta = resposta + (f"Id usuario - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
    elif escolha_qual_consulta == "2":
        print("CRIANDO AINDA")
+
 def registro_de_compra_epi(compra_msg):
     global db, cursor
     user_id = str(compra_msg.from_user.id)
