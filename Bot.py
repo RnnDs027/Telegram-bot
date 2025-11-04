@@ -75,14 +75,31 @@ def escolha_de_avanço(pda):
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
       " 1 ---- EPI \n" \
       " 2 ---- Fertilizantes\n")
-        
+        bot.register_next_step_handler(msg_consulta, consulta_epi)
+       
         
     elif texto == "2":
-       msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
+        msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
         " 1 ---- EPI \n" \
         " 2 ---- Fertilizantes\n")
-    bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
+        bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
 
+def consulta_epi(msg):
+   global db, cursor
+   escolha_qual_consulta = msg.text.strip()
+
+   if escolha_qual_consulta == "1":
+        cursor.execute("SELECT * FROM pedidos_compras")
+        registros = cursor.fetchall()
+        resposta = ("*Itens cadastrados no banco de dados*\n\n")
+        for linha in registros:
+            user_id = linha[0]
+            categoria_item = linha[1]
+            quantidade = linha[2]
+            resposta = resposta + (f"Id usuario - {user_id}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+        bot.reply_to(msg,resposta)
+   elif escolha_qual_consulta == "2":
+       print("CRIANDO AINDA")
 def registro_de_compra_epi(compra_msg):
     global db, cursor
     user_id = str(compra_msg.from_user.id)
@@ -107,7 +124,6 @@ def quantidade_epi(compra_msg,user_id):
    Escolha_epi = compra_msg.text.strip() 
    bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
    bot.register_next_step_handler(compra_msg,processar_compra_epi,Escolha_epi,user_id)
-
 
 def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
