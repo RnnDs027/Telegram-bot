@@ -1,0 +1,185 @@
+import telebot
+import os
+import mysql.connector
+
+db_host = os.environ.get('MYSQLHOST')
+db_user = os.environ.get('MYSQLUSER')
+db_password = os.environ.get('MYSQLPASSWORD')
+db_name = os.environ.get('MYSQLDATABASE')
+db_port = os.environ.get('MYSQLPORT')
+
+try:
+   db = mysql.connector.connect(
+      host=db_host,
+      user=db_user,
+      password=db_password,
+      database=db_name,
+      port=int(db_port),
+   )
+   cursor = db.cursor()
+   print("--- CONEXÃO COM O BANCO DE DADOS FOI UM SUCESSO! O cursor foi criado. ---")
+
+except mysql.connector.Error as err:
+    print(f"Erro ao conectar ao MySQL: {err}") 
+    print("--- FALHA NA CONEXÃO! O cursor NÃO foi criado! ---") # <--- ADICIONE ISSO
+except Exception as e:
+    print(f"Ocorreu um erro inesperado: {e}")
+    print("--- FALHA NA CONEXÃO! O cursor NÃO foi criado! ---")
+
+TOKEN = os.environ.get("BOT_TOKEN")
+
+if not TOKEN:
+   print("ERRO: BOT_TOKEN não encontrado nas variáveis de ambiente! ")
+
+bot = telebot.TeleBot(TOKEN)
+
+@bot.message_handler(commands=['salvar'])
+def save_note(message):
+    user_id = message.from_user.id
+    parts = message.text.split(maxsplit=1)
+    if len(parts) > 1:
+        text_to_save = parts[1].strip()
+        sql = """
+        INSERT INTO user_notes (user_id,note_text)
+        VALUES(%s, %s)
+        ON DUPLICATE KEY UPDATE note_text = %s
+        """
+    valores = (user_id , text_to_save, text_to_save)
+    try:
+     cursor.execute(sql,valores)
+     db.commit()
+     bot.reply_to(message,f"Salvo '{text_to_save}'")
+    except Exception as e:
+     bot.reply_to(message, f"Erro ao salvar no banco: {e}")
+    else:
+        bot.reply_to(message, "Use /salvar <texto para salvar>")
+
+@bot.message_handler(func=lambda message: True)
+def primeira_pergunta_bot(message):
+    chat_id = message.chat.id
+    bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
+    msg = bot.send_message(chat_id,"Escolha um numero\n" \
+    " 1 ---- Consultas \n" \
+    " 2 ---- Pedido de compras\n")
+    
+    
+    
+    bot.register_next_step_handler(msg,escolha_de_avanço)
+
+def escolha_de_avanço(pda):
+    texto = pda.text.lower()
+    chat_id = pda.chat.id
+
+    if texto == "1":
+        bot.reply_to(pda,"Voce esta entrando nas consultas\n")
+        msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
+      " 1 ---- EPI \n" \
+      " 2 ---- Fertilizantes\n")
+        bot.register_next_step_handler(msg_consulta, consulta_epi)
+       
+        
+    elif texto == "2":
+        msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
+        " 1 ---- EPI \n" \
+        " 2 ---- Fertilizantes\n")
+        bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
+
+def consulta_epi(msg):
+   global db, cursor
+   escolha_qual_consulta = msg.text.strip()
+
+   if escolha_qual_consulta == "1":
+        cursor.execute("SELECT * FROM pedidos_compras")
+        registros = cursor.fetchall()
+        resposta = ("*Itens cadastrados no banco de dados*\n\n")
+        for linha in registros:
+            codigo_item = linha[0]
+            categoria_item = linha[2]
+            quantidade = linha[3]
+            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+        bot.reply_to(msg,resposta)
+   elif escolha_qual_consulta == "2":
+       print("CRIANDO AINDA")
+
+def registro_de_compra_epi(compra_msg):
+    global db, cursor
+    user_id = str(compra_msg.from_user.id)
+    escolha = compra_msg.text.strip()
+    escolha_EPI = ""
+
+    if escolha == "1":
+        escolha_EPI = compra_msg.text.strip()
+        bot.reply_to(compra_msg,"Escolha um numero \n" \
+        "1 ---- Capacete\n" \
+        "2 ---- Luva \n" \
+        "3 ---- Butina\n" \
+        "4 ---- Protetor uricular\n" \
+        "5 ---- Oculos\n")
+        bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
+
+    if escolha == "2":
+        item_pedido = "Fertilizantes"
+    
+def quantidade_epi(compra_msg,user_id):
+   global db, cursor
+   Escolha_epi = compra_msg.text.strip() 
+   bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+   bot.register_next_step_handler(compra_msg,processar_compra_epi,Escolha_epi,user_id)
+
+def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
+    global db, cursor
+    quantidade = quantidade_msg.text.strip()
+
+    if Escolha_epi == "1":
+     Escolha_epi = "Capacete"          
+
+    elif Escolha_epi == "2":
+        Escolha_epi = "Luva"
+
+    elif Escolha_epi == "3":
+        Escolha_epi = "Butina"
+      
+    elif Escolha_epi == "4":
+        Escolha_epi = "Protetor uricular"
+
+    elif Escolha_epi == "5":
+        Escolha_epi = "Oculos"
+
+    sql = """
+        INSERT INTO pedidos_compras (user_id, categoria_item,quantidade)
+        VALUES (%s,%s,%s)
+        """
+    Valores = (user_id, Escolha_epi,quantidade)
+    cursor.execute(sql, Valores)
+    db.commit()
+    bot.reply_to(quantidade_msg,f"Pedido de compra para '{Escolha_epi} finalizado com sucesso'")
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+bot.polling()
+
+
+
+
+
+
+
+
+
+
+
+
+bot.polling()

@@ -145,14 +145,19 @@ def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
     elif Escolha_epi == "5":
         Escolha_epi = "Oculos"
 
-    sql = """
-        INSERT INTO pedidos_compras (user_id, categoria_item,quantidade)
-        VALUES (%s,%s,%s)
-        """
-    Valores = (user_id, Escolha_epi,quantidade)
-    cursor.execute(sql, Valores)
+    cursor.execute(
+         "SELECT quantidade from pedidos_compras WHERE categoria_item = %s",
+         (categoria_item)
+     )
+    resultado = cursor.fetchone()
+    quantidade_atual = resultado[0]
+    nova_quantidade = quantidade + quantidade_atual
+
+    cursor.execute(
+        "UPDATE pedidos_compras SET quantidade = %s",
+        (nova_quantidade)
+    )
     db.commit()
-    bot.reply_to(quantidade_msg,f"Pedido de compra para '{Escolha_epi} finalizado com sucesso'")
 
 
    
