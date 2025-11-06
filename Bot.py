@@ -146,8 +146,8 @@ def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
         Escolha_epi = "Oculos"
 
     cursor.execute(
-         "SELECT quantidade from pedidos_compras WHERE categoria_item = %s",
-         (categoria_item)
+         "SELECT quantidade FROM pedidos_compras WHERE categoria_item = %s AND user_id = %s",
+         (Escolha_epi,user_id)
      )
     resultado = cursor.fetchone()
     quantidade_atual = resultado[0]
