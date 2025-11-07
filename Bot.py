@@ -155,7 +155,7 @@ def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
 
     cursor.execute(
         "UPDATE pedidos_compras SET quantidade = %s",
-        (nova_quantidade)
+        (nova_quantidade,)
     )
     db.commit()
 
