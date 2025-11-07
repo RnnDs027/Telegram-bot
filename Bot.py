@@ -33,87 +33,6 @@ if not TOKEN:
 
 bot = telebot.TeleBot(TOKEN)
 
-class EPIHandler:
-    def __init__(self,bot,db,cursor):
-        self.bot = bot
-        self.db = db
-        self.cursor = cursor
-
-    def consulta_epi(self,msg):
-        escolha_qual_consulta = msg.text.strip()
-
-        if escolha_qual_consulta == "1":
-            self.cursor.execute("SELECT * FROM pedidos_compras")
-            registros = self.cursor.fetchall()
-            resposta = ("*Itens cadastrados no banco de dados*\n\n")
-            for linha in registros:
-                codigo_item = linha[0]
-                categoria_item = linha[2]
-                quantidade = linha[3]
-                resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
-            self.bot.reply_to(msg,resposta)
-
-        elif escolha_qual_consulta == "2":
-         print("CRIANDO AINDA")
-
-    def registro_de_compra_epi(self,compra_msg):
-        user_id = str(compra_msg.from_user.id)
-        escolha = compra_msg.text.strip()
-        escolha_EPI = ""
-
-        if escolha == "1":
-            escolha_EPI = compra_msg.text.strip()
-            self.bot.reply_to(compra_msg,"Escolha um numero \n" \
-            "1 ---- Capacete\n" \
-            "2 ---- Luva \n" \
-            "3 ---- Butina\n" \
-            "4 ---- Protetor uricular\n" \
-            "5 ---- Oculos\n")
-            nova_msg = self.bot.send_message(compra_msg.chat.id, "Selecione o EPI:")
-            self.bot.register_next_step_handler(nova_msg, self.quantidade_epi, user_id) 
-
-        if escolha == "2":
-            item_pedido = "Fertilizantes"
-            self.bot.reply_to(compra_msg,"Em desenvolvimento")
-        
-    def quantidade_epi(self,compra_msg,user_id):
-        Escolha_epi = compra_msg.text.strip() 
-        nova_msg = self.bot.send_message(compra_msg.chat.id, "Qual a quantidade voce deseja adicionar ao estoque?")
-        self.bot.register_next_step_handler(nova_msg, self.processar_compra_epi, Escolha_epi, user_id)
-
-    def processar_compra_epi(self,quantidade_msg,Escolha_epi,user_id):
-        quantidade = int(quantidade_msg.text.strip())
-
-        if Escolha_epi == "1":
-            Escolha_epi = "Capacete"          
-
-        elif Escolha_epi == "2":
-            Escolha_epi = "Luva"    
-
-        elif Escolha_epi == "3":
-            Escolha_epi = "Butina"
-        
-        elif Escolha_epi == "4":
-            Escolha_epi = "Protetor auricular"
-
-        elif Escolha_epi == "5":
-            Escolha_epi = "Oculos"
-
-        self.cursor.execute(
-            "SELECT quantidade FROM pedidos_compras WHERE categoria_item = %s AND user_id = %s",
-            (Escolha_epi,user_id)
-        )
-        resultado = self.cursor.fetchone()
-        quantidade_atual = resultado[0]
-        nova_quantidade = quantidade + quantidade_atual
-
-        self.cursor.execute(
-            "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
-            (nova_quantidade,Escolha_epi,user_id)
-        )
-        self.db.commit()
-        self.bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
-
 @bot.message_handler(commands=['salvar'])
 def save_note(message):
     user_id = message.from_user.id
@@ -156,14 +75,90 @@ def escolha_de_avanço(pda):
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
       " 1 ---- EPI \n" \
       " 2 ---- Fertilizantes\n")
-        bot.register_next_step_handler(msg_consulta, EPIHandler.consulta_epi)
+        bot.register_next_step_handler(msg_consulta, consulta_epi)
        
         
     elif texto == "2":
         msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
         " 1 ---- EPI \n" \
         " 2 ---- Fertilizantes\n")
-        bot.register_next_step_handler(msg_compra, EPIHandler.registro_de_compra_epi)
+        bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
+
+def consulta_epi(msg):
+   global db, cursor
+   escolha_qual_consulta = msg.text.strip()
+
+   if escolha_qual_consulta == "1":
+        cursor.execute("SELECT * FROM pedidos_compras")
+        registros = cursor.fetchall()
+        resposta = ("*Itens cadastrados no banco de dados*\n\n")
+        for linha in registros:
+            codigo_item = linha[0]
+            categoria_item = linha[2]
+            quantidade = linha[3]
+            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+        bot.reply_to(msg,resposta)
+   elif escolha_qual_consulta == "2":
+       print("CRIANDO AINDA")
+
+def registro_de_compra_epi(compra_msg):
+    global db, cursor
+    user_id = str(compra_msg.from_user.id)
+    escolha = compra_msg.text.strip()
+    escolha_EPI = ""
+
+    if escolha == "1":
+        escolha_EPI = compra_msg.text.strip()
+        bot.reply_to(compra_msg,"Escolha um numero \n" \
+        "1 ---- Capacete\n" \
+        "2 ---- Luva \n" \
+        "3 ---- Butina\n" \
+        "4 ---- Protetor uricular\n" \
+        "5 ---- Oculos\n")
+        bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
+
+    if escolha == "2":
+        item_pedido = "Fertilizantes"
+    
+def quantidade_epi(compra_msg,user_id):
+   global db, cursor
+   Escolha_epi = compra_msg.text.strip() 
+   bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+   bot.register_next_step_handler(compra_msg,processar_compra_epi,Escolha_epi,user_id)
+
+def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
+    global db, cursor
+    quantidade = int(quantidade_msg.text.strip())
+
+    if Escolha_epi == "1":
+     Escolha_epi = "Capacete"          
+
+    elif Escolha_epi == "2":
+        Escolha_epi = "Luva"
+
+    elif Escolha_epi == "3":
+        Escolha_epi = "Butina"
+      
+    elif Escolha_epi == "4":
+        Escolha_epi = "Protetor uricular"
+
+    elif Escolha_epi == "5":
+        Escolha_epi = "Oculos"
+
+    cursor.execute(
+         "SELECT quantidade FROM pedidos_compras WHERE categoria_item = %s AND user_id = %s",
+         (Escolha_epi,user_id)
+     )
+    resultado = cursor.fetchone()
+    quantidade_atual = resultado[0]
+    nova_quantidade = quantidade + quantidade_atual
+
+    cursor.execute(
+        "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
+        (nova_quantidade,Escolha_epi,user_id)
+    )
+    db.commit()
+    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
 
 
    
