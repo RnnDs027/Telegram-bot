@@ -154,10 +154,11 @@ def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
     nova_quantidade = quantidade + quantidade_atual
 
     cursor.execute(
-        "UPDATE pedidos_compras SET quantidade = %s",
+        "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = #%s AND user_id = %s",
         (nova_quantidade,)
     )
     db.commit()
+    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {[Escolha_epi]} realizado com sucesso")
 
 
    
