@@ -128,7 +128,7 @@ def quantidade_epi(compra_msg,user_id):
 
 def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
-    quantidade = quantidade_msg.text.strip()
+    quantidade = int(quantidade_msg.text.strip())
 
     if Escolha_epi == "1":
      Escolha_epi = "Capacete"          
