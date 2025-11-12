@@ -101,16 +101,20 @@ def escolha_soma_do_estoque(msg):
 #TODAS AS FUNÇOES DE FERTILIZANTE
 def consulta_fertilizante(msg):
     global db,cursor
-    cursor.execute("SELECT * FROM soma_fertilizante")
-    registros = cursor.fetchall()
-    resposta = ("*Itens cadastrados no bando de dados* \n\n")
-    for linha in registros:
-        codigo_item = linha[0]
-        categoria_intem = linha[2]
-        quantidade = linha[3]
-        resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
-        bot.reply_to(msg,resposta)
-        
+    global db, cursor
+    escolha_qual_consulta = msg.text.strip()
+
+    if escolha_qual_consulta == "1":
+        cursor.execute("SELECT * FROM soma_fertilizante")
+        registros = cursor.fetchall()
+        resposta = ("*Itens cadastrados no bando de dados* \n\n")
+        for linha in registros:
+            codigo_item = linha[0]
+            categoria_intem = linha[2]
+            quantidade = linha[3]
+            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+            bot.reply_to(msg,resposta)
+
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
    global db, cursor
