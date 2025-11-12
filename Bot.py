@@ -118,7 +118,7 @@ def remover_produto(msg):
     elif escolha == "2":
         escolha == "remoção"
         bot.reply_to(msg,"voces esta entrando na remoção de estoque Fertilizante")
-        registro_fertilizante(msg,registro_fertilizante,escolha)
+        bot.register_mext_step_handler(msg,registro_fertilizante,escolha)
 
 
 
