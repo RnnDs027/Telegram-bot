@@ -73,17 +73,20 @@ def escolha_de_avanço(pda):
       " 1 ---- EPI \n" \
       " 2 ---- Fertilizantes\n")
         
-        if msg_consulta == "1":
-            bot.register_next_step_handler(msg_consulta, consulta_epi)
-        elif msg_consulta == "2":
-            bot.register_next_step_handler(msg_consulta, consulta_fertilizante)
-       
+        bot.register_next_step_handler(msg_consulta, consulta_epi)
         
     elif texto == "2":
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
         " 1 ---- EPI \n\n\n" \
         " 2 ---- Fertilizantes\n")
         bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
+
+def escolha_de_qual_consulta(msg):
+    escolha = msg
+    if escolha == "1":
+        consulta_epi
+    elif escolha =="2":
+        consulta_fertilizante
 
 def consulta_epi(msg):
    global db, cursor
