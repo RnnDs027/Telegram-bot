@@ -94,10 +94,9 @@ def escolha_de_qual_consulta(msg):
         consulta_fertilizante(msg)
 
 def escolha_soma_do_estoque(msg):
-    escolha = msg
-    bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
+    escolha = msg.text.strip()
     if escolha == "1":
-
+        bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
         registro_de_soma_epi(msg)
     elif escolha =="2":
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
