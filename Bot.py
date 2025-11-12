@@ -59,11 +59,8 @@ def primeira_pergunta_bot(message):
     chat_id = message.chat.id
     bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um numero\n" \
-    " 1 ---- Consultas \n" \
+    " 1 ---- Consultas \n\n\n" \
     " 2 ---- Pedido de compras\n")
-    
-    
-    
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
 def escolha_de_avanço(pda):
@@ -75,12 +72,16 @@ def escolha_de_avanço(pda):
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
       " 1 ---- EPI \n" \
       " 2 ---- Fertilizantes\n")
-        bot.register_next_step_handler(msg_consulta, consulta_epi)
+        
+        if msg_consulta == "1":
+            bot.register_next_step_handler(msg_consulta, consulta_epi)
+        elif msg_consulta == "2":
+            bot.register_next_step_handler(msg_consulta, consulta_fertilizante)
        
         
     elif texto == "2":
-        msg_compra = bot.send_message(chat_id,"O que deseja comprar?\n" \
-        " 1 ---- EPI \n" \
+        msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
+        " 1 ---- EPI \n\n\n" \
         " 2 ---- Fertilizantes\n")
         bot.register_next_step_handler(msg_compra, registro_de_compra_epi)
 
