@@ -87,9 +87,9 @@ def escolha_de_avanço(pda):
 def escolha_de_qual_consulta(msg):
     escolha = msg
     if escolha == "1":
-        consulta_epi
+        consulta_epi(msg)
     elif escolha =="2":
-        consulta_fertilizante
+       consulta_fertilizante(msg)
 
 def escolha_soma_do_estoque(msg):
     escolha = msg
