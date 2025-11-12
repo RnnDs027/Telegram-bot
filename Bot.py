@@ -63,7 +63,8 @@ def primeira_pergunta_bot(message):
     bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um numero\n" \
     " 1 ---- Consultas \n\n" \
-    " 2 ---- Pedido de compras\n\n\n")
+    " 2 ---- Adição do estoque \n\n" \
+    " 3 ---- Remoção do estoque")
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
 def escolha_de_avanço(pda):
@@ -84,6 +85,13 @@ def escolha_de_avanço(pda):
         " 2 ---- Fertilizantes\n\n\n")
         bot.register_next_step_handler(msg_compra, escolha_soma_do_estoque)
 
+    elif texto == "3":
+        bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
+        msg_compra = bot.send.message(chat_id,"O que deseja remover do estoque?"
+        " 1 ---- EPI \n\n\n" \
+        " 2 ---- Fertilizantes\n\n\n")
+        bot.register_next_step_handler(msg_compra,remover_produto)
+
 def escolha_de_qual_consulta(msg):
     escolha = msg.text.strip()
     if escolha == "1":
@@ -99,8 +107,21 @@ def escolha_soma_do_estoque(msg):
         bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
         registro_de_soma_epi(msg)
     elif escolha =="2":
+        escolha = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
-        registro_soma_fertilizante(msg)
+        registro_fertilizante(msg)
+
+def remover_produto(msg):
+    escolha = msg
+    if escolha == "1":
+        fdsgdsgs
+    elif escolha == "2":
+        escolha == "remoção"
+        bot.reply_to(msg,"voces esta entrando na remoção de estoque Fertilizante")
+        registro_fertilizante(msg,registro_fertilizante,escolha)
+
+
+
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
 def consulta_fertilizante(msg):
@@ -118,20 +139,25 @@ def consulta_fertilizante(msg):
             resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
 
-def registro_soma_fertilizante(msg):
+def registro_fertilizante(msg,escolha):
     global db, cursor
     user_id = str(msg.from_user.id)
     bot.reply_to(msg,"Escolha um numero \n" \
     "1 ---- Adubo\n")
-    bot.register_next_step_handler(msg, quantidade_fertilizante, user_id) 
+    bot.register_next_step_handler(msg, quantidade_fertilizante, escolha,user_id) 
+        
 
-def quantidade_fertilizante(msg,user_id):
+def quantidade_fertilizante(msg,escolha,user_id):
     global db, cursor
     Escolha_fertilizante = msg.text.strip() 
-    bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-    bot.register_next_step_handler(msg,processar_pedido_fertilizante,Escolha_fertilizante,user_id)
+    if escolha == "adição":
+        bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+        bot.register_next_step_handler(msg,somar_produto_fertilizante,Escolha_fertilizante,user_id)
+    elif escolha == "remoção":
+        bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
+        bot.register_next_step_handler(msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
 
-def processar_pedido_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
+def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
     print("Chegou ate aqui normal")
     quantidade = int(quantidade_msg.text.strip())
@@ -155,6 +181,27 @@ def processar_pedido_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_fertilizante} realizado com sucesso")
 
+def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
+    global db, cursor
+    quantidade = int(quantidade_msg.text.strip())
+    
+
+    if Escolha_fertilizante == "1":
+     Escolha_fertilizante = "Adubo"         
+    cursor.execute(
+         "SELECT quantidade_em_sacos FROM soma_fertilizante WHERE categoria_item = %s AND user_id = %s",
+         (Escolha_fertilizante,user_id)
+     )
+    resultado = cursor.fetchone()
+    quantidade_atual = resultado[0]
+    nova_quantidade = quantidade - quantidade_atual
+    print("começou a atualizar")
+    cursor.execute(
+        "UPDATE soma_fertilizante SET quantidade_em_sacos = %s WHERE  categoria_item = %s AND user_id = %s",
+        (nova_quantidade,Escolha_fertilizante,user_id)
+    )
+    db.commit()
+    bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} realizado com sucesso")
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
@@ -192,9 +239,9 @@ def quantidade_epi(compra_msg,user_id):
    global db, cursor
    Escolha_epi = compra_msg.text.strip() 
    bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-   bot.register_next_step_handler(compra_msg,processar_pedido_epi,Escolha_epi,user_id)
+   bot.register_next_step_handler(compra_msg,somar_produto_fertilizante,Escolha_epi,user_id)
 
-def processar_pedido_epi(quantidade_msg,Escolha_epi,user_id):
+def somar_produto_fertilizante(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
@@ -242,5 +289,5 @@ def processar_pedido_epi(quantidade_msg,Escolha_epi,user_id):
 
 
 
-
+#REPETIÇÃO
 bot.polling()
