@@ -76,7 +76,7 @@ def escolha_de_avanço(pda):
       " 1 ---- EPI \n" \
       " 2 ---- Fertilizantes\n")
         
-        bot.register_next_step_handler(msg_consulta, consulta_epi)
+        bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
         
     elif texto == "2":
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
@@ -100,23 +100,30 @@ def escolha_soma_do_estoque(msg):
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
 def consulta_fertilizante(msg):
-  bot.reply_to(msg,"Esta entrando em consulta fertilizante")
+    global db,cursor
+    cursor.execute("SELECT * FROM soma_fertilizante")
+    registros = cursor.fetchall()
+    resposta = ("*Itens cadastrados no banco de dados* \n\n")
+    for linha in registros:
+        codigo_item = linha[0]
+        categoria_item = linha[2]
+        quantidade = linha[3]
+        resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+    bot.reply_to(msg,resposta)
+
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
-   global db, cursor
-   escolha_qual_consulta = msg.text.strip()
-
-   if escolha_qual_consulta == "1":
-        cursor.execute("SELECT * FROM pedidos_compras")
-        registros = cursor.fetchall()
-        resposta = ("*Itens cadastrados no banco de dados*\n\n")
-        for linha in registros:
-            codigo_item = linha[0]
-            categoria_item = linha[2]
-            quantidade = linha[3]
-            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
-        bot.reply_to(msg,resposta)
+    global db, cursor
+    cursor.execute("SELECT * FROM pedidos_compras")
+    registros = cursor.fetchall()
+    resposta = ("*Itens cadastrados no banco de dados*\n\n")
+    for linha in registros:
+        codigo_item = linha[0]
+        categoria_item = linha[2]
+        quantidade = linha[3]
+        resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+    bot.reply_to(msg,resposta)
 
 def registro_de_soma_epi(compra_msg):
     global db, cursor
