@@ -95,9 +95,12 @@ def escolha_de_qual_consulta(msg):
 
 def escolha_soma_do_estoque(msg):
     escolha = msg
+    bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
     if escolha == "1":
+
         registro_de_soma_epi(msg)
     elif escolha =="2":
+        bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
         registro_soma_fertilizante(msg)
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
@@ -149,21 +152,21 @@ def consulta_epi(msg):
             resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
 
-def registro_de_soma_epi(msg):
+def registro_de_soma_epi(compra_msg):
     global db, cursor
-    user_id = str(msg.from_user.id)
-    escolha = msg.text.strip()
+    user_id = str(compra_msg.from_user.id)
+    escolha = compra_msg.text.strip()
     escolha_EPI = ""
 
     if escolha == "1":
-        escolha_EPI = msg.text.strip()
-        bot.reply_to(msg,"Escolha um numero \n" \
+        escolha_EPI = compra_msg.text.strip()
+        bot.reply_to(compra_msg,"Escolha um numero \n" \
         "1 ---- Capacete\n" \
         "2 ---- Luva \n" \
         "3 ---- Butina\n" \
         "4 ---- Protetor uricular\n" \
         "5 ---- Oculos\n")
-        bot.register_next_step_handler(msg, quantidade_epi, user_id) 
+        bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
     
 def quantidade_epi(compra_msg,user_id):
    global db, cursor
