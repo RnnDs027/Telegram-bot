@@ -116,6 +116,21 @@ def consulta_fertilizante(msg):
             resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
 
+def registro_soma_fertilizante(msg):
+    global db, cursor
+    user_id = str(msg.from_user.id)
+    bot.reply_to(msg,"Escolha um numero \n" \
+    "1 ---- Adubo\n")
+    bot.register_next_step_handler(msg, quantidade_fertilizante, user_id) 
+
+def quantidade_fertilizante(msg,user_id):
+    global db, cursor
+    Escolha_fertilizante = msg.text.strip() 
+    bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+    bot.register_next_step_handler(msg,processar_pedido_fertilizante,Escolha_fertilizante,user_id)
+
+def processar_pedido_fertilizante(msg):
+   bot.reply_to(msg,"Chegou no processar pedido fertilizante")
 
 
 #TODAS AS FUNÇÕES PARA EPI
@@ -149,17 +164,14 @@ def registro_de_soma_epi(compra_msg):
         "4 ---- Protetor uricular\n" \
         "5 ---- Oculos\n")
         bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
-
-    if escolha == "2":
-        item_pedido = "Fertilizantes"
     
 def quantidade_epi(compra_msg,user_id):
    global db, cursor
    Escolha_epi = compra_msg.text.strip() 
    bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-   bot.register_next_step_handler(compra_msg,processar_compra_epi,Escolha_epi,user_id)
+   bot.register_next_step_handler(compra_msg,processar_pedido_epi,Escolha_epi,user_id)
 
-def processar_compra_epi(quantidade_msg,Escolha_epi,user_id):
+def processar_pedido_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
