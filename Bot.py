@@ -85,11 +85,13 @@ def escolha_de_avanço(pda):
         bot.register_next_step_handler(msg_compra, escolha_soma_do_estoque)
 
 def escolha_de_qual_consulta(msg):
-    escolha = msg
+    escolha = msg.text.strip()
     if escolha == "1":
+        bot.reply_to(msg,"voces esta entrando na consulta EPI")
         consulta_epi(msg)
     elif escolha =="2":
-       consulta_fertilizante(msg)
+        bot.reply_to(msg,"voces esta entrando na consulta EPI")
+        consulta_fertilizante(msg)
 
 def escolha_soma_do_estoque(msg):
     escolha = msg
