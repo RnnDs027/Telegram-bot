@@ -62,8 +62,8 @@ def primeira_pergunta_bot(message):
     chat_id = message.chat.id
     bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um numero\n" \
-    " 1 ---- Consultas \n\n\n" \
-    " 2 ---- Pedido de compras\n")
+    " 1 ---- Consultas \n\n" \
+    " 2 ---- Pedido de compras\n\n\n")
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
 def escolha_de_avanço(pda):
@@ -81,7 +81,7 @@ def escolha_de_avanço(pda):
     elif texto == "2":
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
         " 1 ---- EPI \n\n\n" \
-        " 2 ---- Fertilizantes\n")
+        " 2 ---- Fertilizantes\n\n\n")
         bot.register_next_step_handler(msg_compra, escolha_soma_do_estoque)
 
 def escolha_de_qual_consulta(msg):
@@ -131,8 +131,29 @@ def quantidade_fertilizante(msg,user_id):
     bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
     bot.register_next_step_handler(msg,processar_pedido_fertilizante,Escolha_fertilizante,user_id)
 
-def processar_pedido_fertilizante(msg):
-   bot.reply_to(msg,"Chegou no processar pedido fertilizante")
+def processar_pedido_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
+    global db, cursor
+    print("Chegou ate aqui normal")
+    quantidade = int(quantidade_msg.text.strip())
+    
+
+    if Escolha_fertilizante == "1":
+     Escolha_fertilizante = "Adubo"    
+     print("começou a procurar o produto")      
+    cursor.execute(
+         "SELECT quantidade_em_sacos FROM soma_fertilizante WHERE categoria_item = %s AND user_id = %s",
+         (Escolha_fertilizante,user_id)
+     )
+    resultado = cursor.fetchone()
+    quantidade_atual = resultado[0]
+    nova_quantidade = quantidade + quantidade_atual
+    print("começou a atualizar")
+    cursor.execute(
+        "UPDATE soma_fertilizante SET quantidade_em_sacos = %s WHERE  categoria_item = %s AND user_id = %s",
+        (nova_quantidade,Escolha_fertilizante,user_id)
+    )
+    db.commit()
+    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_fertilizante} realizado com sucesso")
 
 
 #TODAS AS FUNÇÕES PARA EPI
