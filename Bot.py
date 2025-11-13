@@ -195,9 +195,9 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     quantidade_atual = resultado[0]
     nova_quantidade = quantidade_atual - quantidade
     if nova_quantidade < 0:
-        bot.reply_to("O Estoque não pode ficar negativo. Tente outro valor")
+        bot.reply_to(quantidade_msg,"O Estoque não pode ficar negativo. Tente outro valor")
         escolha1 = "remoção"
-        bot.register_next_step_handler(quantidade_msg,quantidade_fertilizante,escolha1,user_id)
+        bot.register_next_step_handler(quantidade_msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
     else:
         print("começou a atualizar")
         cursor.execute(
