@@ -180,7 +180,7 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
         (nova_quantidade,Escolha_fertilizante,user_id)
     )
     db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_fertilizante} realizado com sucesso")
+    bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_fertilizante} foi realizado com sucesso")
 
 def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
@@ -206,7 +206,7 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
             (nova_quantidade,Escolha_fertilizante,user_id)
         )
         db.commit()
-        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} realizado com sucesso")
+        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} foi realizado com sucesso")
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
@@ -281,7 +281,7 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
         (nova_quantidade,Escolha_epi,user_id)
     )
     db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
+    bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso")
 
 def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
@@ -313,13 +313,13 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
         bot.reply_to(quantidade_msg,"O Estoque não pode ficar negativo. Tente outro valor")
         escolha1 = "remoção"
         bot.register_next_step_handler(quantidade_msg,remover_produto_epi,Escolha_epi,user_id)
-
-    cursor.execute(
-        "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
-        (nova_quantidade,Escolha_epi,user_id)
-    )
-    db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
+    else:
+        cursor.execute(
+            "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
+            (nova_quantidade,Escolha_epi,user_id)
+        )
+        db.commit()
+        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso")
 
 
 
