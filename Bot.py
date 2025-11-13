@@ -151,11 +151,11 @@ def quantidade_fertilizante(msg,escolha1,user_id):
     global db, cursor
     Escolha_fertilizante = msg.text.strip() 
     if escolha1 == "adição":
-        bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-        bot.register_next_step_handler(msg,somar_produto_fertilizante,Escolha_fertilizante,user_id)
+        msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+        bot.register_next_step_handler(msg_enviada,somar_produto_fertilizante,Escolha_fertilizante,user_id)
     elif escolha1 == "remoção":
-        bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
-        bot.register_next_step_handler(msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
+        msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
+        bot.register_next_step_handler(msg_enviada,remover_produto_fertilizante,Escolha_fertilizante,user_id)
 
 def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
