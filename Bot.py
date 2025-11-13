@@ -242,9 +242,9 @@ def quantidade_epi(compra_msg,user_id):
    global db, cursor
    Escolha_epi = compra_msg.text.strip() 
    bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-   bot.register_next_step_handler(compra_msg,somar_produto_fertilizante,Escolha_epi,user_id)
+   bot.register_next_step_handler(compra_msg,somar_produto_epi,Escolha_epi,user_id)
 
-def somar_produto_fertilizante(quantidade_msg,Escolha_epi,user_id):
+def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
