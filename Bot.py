@@ -115,7 +115,9 @@ def escolha_remover_estoque(msg):
     escolha = msg.text.strip()
     print("Chegou na def remover")
     if escolha == "1":
-        print("Sendo criado ainda")
+        escolha1 = "remoção"
+        registro_epi(msg,escolha1)
+
     elif escolha == "2":
         print("Chegou na parte da escolha remoção")
         escolha1 = "remoção"
@@ -144,8 +146,7 @@ def registro_fertilizante(msg,escolha1):
     user_id = str(msg.from_user.id)
     bot.reply_to(msg,"Escolha um numero \n" \
     "1 ---- Adubo\n")
-    bot.register_next_step_handler(msg, quantidade_fertilizante, escolha1,user_id) 
-        
+    bot.register_next_step_handler(msg, quantidade_fertilizante, escolha1,user_id)      
 
 def quantidade_fertilizante(msg,escolha1,user_id):
     global db, cursor
@@ -199,7 +200,7 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
         escolha1 = "remoção"
         bot.register_next_step_handler(quantidade_msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
     else:
-        print("começou a atualizar")
+        print("começou a atualizar")    
         cursor.execute(
             "UPDATE soma_fertilizante SET quantidade_em_sacos = %s WHERE  categoria_item = %s AND user_id = %s",
             (nova_quantidade,Escolha_fertilizante,user_id)
@@ -223,12 +224,11 @@ def consulta_epi(msg):
             resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
         bot.reply_to(msg,resposta)
 
-def registro_de_soma_epi(compra_msg):
+def registro_epi(compra_msg,escolha1):
     global db, cursor
     user_id = str(compra_msg.from_user.id)
     escolha = compra_msg.text.strip()
     escolha_EPI = ""
-
     if escolha == "1":
         escolha_EPI = compra_msg.text.strip()
         bot.reply_to(compra_msg,"Escolha um numero \n" \
@@ -237,13 +237,17 @@ def registro_de_soma_epi(compra_msg):
         "3 ---- Butina\n" \
         "4 ---- Protetor uricular\n" \
         "5 ---- Oculos\n")
-        bot.register_next_step_handler(compra_msg, quantidade_epi, user_id) 
+        bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
     
-def quantidade_epi(compra_msg,user_id):
-   global db, cursor
-   Escolha_epi = compra_msg.text.strip() 
-   bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-   bot.register_next_step_handler(compra_msg,somar_produto_epi,Escolha_epi,user_id)
+def quantidade_epi(compra_msg,escolha1,user_id):
+    global db, cursor
+    Escolha_epi = compra_msg.text.strip() 
+    if escolha1 == "adição":
+        msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+        bot.register_next_step_handler(msg_enviada,somar_produto_epi,Escolha_epi,user_id)
+    elif escolha1 == "remoção":
+        msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja remover do estoque?")
+        bot.register_next_step_handler(msg_enviada,remover_produto_epi,Escolha_epi,user_id)
 
 def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
@@ -279,12 +283,43 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
 
+def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
+    global db, cursor
+    quantidade = int(quantidade_msg.text.strip())
 
-   
+    if Escolha_epi == "1":
+     Escolha_epi = "Capacete"          
 
+    elif Escolha_epi == "2":
+        Escolha_epi = "Luva"
 
+    elif Escolha_epi == "3":
+        Escolha_epi = "Butina"
+      
+    elif Escolha_epi == "4":
+        Escolha_epi = "Protetor uricular"
 
+    elif Escolha_epi == "5":
+        Escolha_epi = "Oculos"
 
+    cursor.execute(
+         "SELECT quantidade FROM pedidos_compras WHERE categoria_item = %s AND user_id = %s",
+         (Escolha_epi,user_id)
+     )
+    resultado = cursor.fetchone()
+    quantidade_atual = resultado[0]
+    nova_quantidade = quantidade_atual - quantidade
+    if nova_quantidade < 0:
+        bot.reply_to(quantidade_msg,"O Estoque não pode ficar negativo. Tente outro valor")
+        escolha1 = "remoção"
+        bot.register_next_step_handler(quantidade_msg,remover_produto_epi,Escolha_epi,user_id)
+
+    cursor.execute(
+        "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
+        (nova_quantidade,Escolha_epi,user_id)
+    )
+    db.commit()
+    bot.reply_to(quantidade_msg,f"Seu pedido de compra do item {Escolha_epi} realizado com sucesso")
 
 
 
