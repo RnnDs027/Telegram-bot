@@ -74,24 +74,23 @@ def escolha_de_avanço(pda):
     if texto == "1":
         bot.reply_to(pda,"Voce esta entrando nas consultas\n")
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
-      " 1 ---- EPI \n" \
-      " 2 ---- Fertilizantes\n")
+      " 1 ---- EPI \n\n" \
+      " 2 ---- Fertilizantes\n\n")
         
         bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
         
     elif texto == "2":
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
-        " 1 ---- EPI \n\n\n" \
-        " 2 ---- Fertilizantes\n\n\n")
-        bot.register_next_step_handler(msg_compra, escolha_soma_do_estoque)
+        " 1 ---- EPI \n\n" \
+        " 2 ---- Fertilizantes\n\n")
+        bot.register_next_step_handler(msg_compra, escolha_adiçao_do_estoque)
 
     elif texto == "3":
         bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
         msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
-        " 1 ---- EPI \n\n\n" \
-        " 2 ---- Fertilizantes\n\n\n")
-        escolha = "remoção"
-        bot.register_next_step_handler(msg_compra,registro_fertilizante,escolha)
+        " 1 ---- EPI \n\n" \
+        " 2 ---- Fertilizantes\n\n")
+        bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
 
 def escolha_de_qual_consulta(msg):
     escolha = msg.text.strip()
@@ -99,10 +98,10 @@ def escolha_de_qual_consulta(msg):
         bot.reply_to(msg,"voces esta entrando na consulta EPI")
         consulta_epi(msg)
     elif escolha =="2":
-        bot.reply_to(msg,"voces esta entrando na consulta EPI")
+        bot.reply_to(msg,"voces esta entrando na consulta Fertilizantes")
         consulta_fertilizante(msg)
 
-def escolha_soma_do_estoque(msg):
+def escolha_adiçao_do_estoque(msg):
     escolha = msg.text.strip()
     if escolha == "1":
         bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
@@ -110,11 +109,10 @@ def escolha_soma_do_estoque(msg):
     elif escolha =="2":
         escolha = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
-        registro_fertilizante(msg)
+        registro_fertilizante(msg,escolha)
 
 def escolha_remover_estoque(msg):
     print("Chegou na def remover")
-    escolha = msg.text.strip()
     if escolha == "1":
         print("Sendo criado ainda")
     elif escolha == "2":
@@ -196,13 +194,17 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     resultado = cursor.fetchone()
     quantidade_atual = resultado[0]
     nova_quantidade = quantidade - quantidade_atual
-    print("começou a atualizar")
-    cursor.execute(
-        "UPDATE soma_fertilizante SET quantidade_em_sacos = %s WHERE  categoria_item = %s AND user_id = %s",
-        (nova_quantidade,Escolha_fertilizante,user_id)
-    )
-    db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} realizado com sucesso")
+    if nova_quantidade < 0:
+        bot.reply_to("O Estoque não pode ficar negativo. Tente outro valor")
+        remover_produto_fertilizante
+    else:
+        print("começou a atualizar")
+        cursor.execute(
+            "UPDATE soma_fertilizante SET quantidade_em_sacos = %s WHERE  categoria_item = %s AND user_id = %s",
+            (nova_quantidade,Escolha_fertilizante,user_id)
+        )
+        db.commit()
+        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} realizado com sucesso")
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
