@@ -184,7 +184,6 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
 def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
-    
 
     if Escolha_fertilizante == "1":
      Escolha_fertilizante = "Adubo"         
@@ -194,10 +193,11 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
      )
     resultado = cursor.fetchone()
     quantidade_atual = resultado[0]
-    nova_quantidade = quantidade - quantidade_atual
+    nova_quantidade = quantidade_atual - quantidade
     if nova_quantidade < 0:
         bot.reply_to("O Estoque não pode ficar negativo. Tente outro valor")
-        remover_produto_fertilizante
+        escolha1 = "remoção"
+        bot.register_next_step_handler(quantidade_msg,quantidade_fertilizante,escolha1,user_id)
     else:
         print("começou a atualizar")
         cursor.execute(
