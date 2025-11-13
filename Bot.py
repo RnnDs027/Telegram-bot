@@ -119,7 +119,6 @@ def escolha_remover_estoque(msg):
     elif escolha == "2":
         print("Chegou na parte da escolha remoção")
         escolha = "remoção"
-        bot.reply_to(msg,"voces esta entrando na remoção de estoque Fertilizante")
         bot.register_next_step_handler(msg,registro_fertilizante,escolha)
 
 
