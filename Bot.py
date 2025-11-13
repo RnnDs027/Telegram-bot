@@ -112,6 +112,7 @@ def escolha_adiçao_do_estoque(msg):
         registro_fertilizante(msg,escolha)
 
 def escolha_remover_estoque(msg):
+    escolha = msg.text.strip()
     print("Chegou na def remover")
     if escolha == "1":
         print("Sendo criado ainda")
