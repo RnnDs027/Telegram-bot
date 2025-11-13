@@ -87,10 +87,10 @@ def escolha_de_avanço(pda):
 
     elif texto == "3":
         bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
-        msg_compra = bot.send.message(chat_id,"O que deseja remover do estoque?"
+        msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
         " 1 ---- EPI \n\n\n" \
         " 2 ---- Fertilizantes\n\n\n")
-        bot.register_next_step_handler(msg_compra,remover_produto)
+        bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
 
 def escolha_de_qual_consulta(msg):
     escolha = msg.text.strip()
@@ -111,16 +111,16 @@ def escolha_soma_do_estoque(msg):
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
         registro_fertilizante(msg)
 
-def remover_produto(msg):
-    escolha = msg
+def escolha_remover_estoque(msg):
+    print("Chegou na def remover")
+    escolha = msg.text.strip()
     if escolha == "1":
-        fdsgdsgs
+        print("Sendo criado ainda")
     elif escolha == "2":
-        escolha == "remoção"
+        print("Chegou na parte da escolha remoção")
+        escolha = "remoção"
         bot.reply_to(msg,"voces esta entrando na remoção de estoque Fertilizante")
-        bot.register_mext_step_handler(msg,registro_fertilizante,escolha)
-
-
+        bot.register_next_step_handler(msg,registro_fertilizante,escolha)
 
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
@@ -140,6 +140,7 @@ def consulta_fertilizante(msg):
         bot.reply_to(msg,resposta)
 
 def registro_fertilizante(msg,escolha):
+    print("Chegou no registro de fertilizante")
     global db, cursor
     user_id = str(msg.from_user.id)
     bot.reply_to(msg,"Escolha um numero \n" \
