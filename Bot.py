@@ -90,7 +90,8 @@ def escolha_de_avanço(pda):
         msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
         " 1 ---- EPI \n\n\n" \
         " 2 ---- Fertilizantes\n\n\n")
-        bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
+        escolha = "remoção"
+        bot.register_next_step_handler(msg_compra,registro_fertilizante,escolha)
 
 def escolha_de_qual_consulta(msg):
     escolha = msg.text.strip()
