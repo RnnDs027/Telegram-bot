@@ -270,15 +270,17 @@ def registro_epi(compra_msg,escolha1):
     btn3 = types.KeyboardButton("Butina")
     btn4 = types.KeyboardButton("Protetor uricular")
     btn5 = types.KeyboardButton("Oculos")
-
     markup.add(btn1,btn2,btn3,btn4,btn5)
 
+    #Interface de usuario
     bot.reply_to(compra_msg,"Escolha um numero \n" \
     "1 ---- Capacete\n" \
     "2 ---- Luva \n" \
     "3 ---- Butina\n" \
     "4 ---- Protetor uricular\n" \
-    "5 ---- Oculos\n")
+    "5 ---- Oculos\n",reply_markup=markup)
+
+    #Mandando a mensagem salva para a proxima função
     bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
     
 def quantidade_epi(compra_msg,escolha1,user_id):
