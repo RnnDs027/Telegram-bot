@@ -61,72 +61,101 @@ def save_note(message):
 @bot.message_handler(func=lambda message: True)
 def primeira_pergunta_bot(message):
     chat_id = message.chat.id
-    markup = types.ReplyKeyboarddMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton("1")
-    btn2 = types.KeyboardButton("2")
-    btn3 = types.KeyboardButton("3")
-
+    #Adição de botões
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Consultas")
+    btn2 = types.KeyboardButton("Adicionar ao estoque")
+    btn3 = types.KeyboardButton("Remover do estoque")
     markup.add(btn1,btn2,btn3)
+
+    #Inicio da interface do usuario
     bot.reply_to(message,"Bem-vindo às consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um número\n" \
     " 1 ---- Consultas \n\n" \
     " 2 ---- Adicionar ao estoque \n\n" \
     " 3 ---- Remover do estoque",reply_markup=markup)
+    #Mandando a mensagem salva para a proxima função
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
 def escolha_de_avanço(pda):
-    texto = pda.text.lower()
+    texto = pda.text
     chat_id = pda.chat.id
 
-    if texto == "1":
+    if texto == "Consultas":
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("EPI")
+        btn2 = types.KeyboardButton("Fertilizantes")
+        markup.add(btn1,btn2)
+
+        #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando nas consultas\n")
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
       " 1 ---- EPI \n\n" \
-      " 2 ---- Fertilizantes\n\n")
+      " 2 ---- Fertilizantes\n\n",reply_markup=markup)
         
+        #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
         
-    elif texto == "2":
+    elif texto == "Adicionar ao estoque":
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("EPI")
+        btn2 = types.KeyboardButton("Fertilizantes")
+        markup.add(btn1,btn2)
+
+        #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
         " 1 ---- EPI \n\n" \
-        " 2 ---- Fertilizantes\n\n")
+        " 2 ---- Fertilizantes\n\n",reply_markup=markup)
+
+        #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_compra, escolha_adiçao_do_estoque)
 
-    elif texto == "3":
+    elif texto == "Remover do estoque":
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("EPI")
+        btn2 = types.KeyboardButton("Fertilizantes")
+        markup.add(btn1,btn2)
+
+        #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
         msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
         " 1 ---- EPI \n\n" \
-        " 2 ---- Fertilizantes\n\n")
+        " 2 ---- Fertilizantes\n\n",reply_markup=markup)
+
+        #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
 
 def escolha_de_qual_consulta(msg):
     escolha = msg.text.strip()
-    if escolha == "1":
+    if escolha == "EPI":
         bot.reply_to(msg,"voces esta entrando na consulta EPI")
         consulta_epi(msg)
-    elif escolha =="2":
+    elif escolha =="Fertilizantes":
         bot.reply_to(msg,"voces esta entrando na consulta Fertilizantes")
         consulta_fertilizante(msg)
 
 def escolha_adiçao_do_estoque(msg):
-    escolha = msg.text.strip()
-    if escolha == "1":
+    escolha = msg.text
+    if escolha == "EPI":
         escolha1 = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
         registro_epi(msg,escolha1)
-    elif escolha =="2":
+    elif escolha =="Fertilizantes":
         escolha1 = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
         registro_fertilizante(msg,escolha1)
 
 def escolha_remover_estoque(msg):
-    escolha = msg.text.strip()
-    if escolha == "1":
+    escolha = msg.text
+    if escolha == "EPI":
         escolha1 = "remoção"
         registro_epi(msg,escolha1)
 
-    elif escolha == "2":
+    elif escolha == "Fertilizantes":
         escolha1 = "remoção"
         registro_fertilizante(msg,escolha1)
 
