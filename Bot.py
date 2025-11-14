@@ -106,7 +106,7 @@ def escolha_de_avanço(pda):
 
         if user_id not in Autorizados:
             bot.reply_to(pda, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
-            escolha_de_avanço(pda)
+            primeira_pergunta_bot
         else:
             #Adição dos botões
             markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -328,8 +328,8 @@ def quantidade_epi(compra_msg,escolha1,user_id):
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja remover do estoque?")
         bot.register_next_step_handler(msg_enviada,remover_produto_epi,Escolha_epi,user_id)
     elif Voltar =="Voltar":
-        bot.reply_to(msg,"voce esta voltando ao menu principal")
-        primeira_pergunta_bot(msg)
+        bot.reply_to(compra_msg,"voce esta voltando ao menu principal")
+        primeira_pergunta_bot(compra_msg)
 
 def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
