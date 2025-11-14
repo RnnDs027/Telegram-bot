@@ -1,5 +1,6 @@
 #IMPORTAÇÃO DAS BIBLIOTECAS
 import telebot
+from telebot import types
 import os
 import mysql.connector
 
@@ -60,11 +61,17 @@ def save_note(message):
 @bot.message_handler(func=lambda message: True)
 def primeira_pergunta_bot(message):
     chat_id = message.chat.id
-    bot.reply_to(message,"Bem vindo as consultas da Fazenda" )
-    msg = bot.send_message(chat_id,"Escolha um numero\n" \
+    markup = types.ReplyKeyboradMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("1")
+    btn2 = types.KeyboardButton("2")
+    btn3 = types.KeyboardButton("3")
+
+    markup.add(btn1,btn2,btn3)
+    bot.reply_to(message,"Bem-vindo às consultas da Fazenda" )
+    msg = bot.send_message(chat_id,"Escolha um número\n" \
     " 1 ---- Consultas \n\n" \
-    " 2 ---- Adição do estoque \n\n" \
-    " 3 ---- Remoção do estoque")
+    " 2 ---- Adicionar ao estoque \n\n" \
+    " 3 ---- Remover do estoque",reply_markup=markup)
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
 def escolha_de_avanço(pda):
@@ -80,6 +87,7 @@ def escolha_de_avanço(pda):
         bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
         
     elif texto == "2":
+        bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
         " 1 ---- EPI \n\n" \
         " 2 ---- Fertilizantes\n\n")
@@ -114,13 +122,11 @@ def escolha_adiçao_do_estoque(msg):
 
 def escolha_remover_estoque(msg):
     escolha = msg.text.strip()
-    print("Chegou na def remover")
     if escolha == "1":
         escolha1 = "remoção"
         registro_epi(msg,escolha1)
 
     elif escolha == "2":
-        print("Chegou na parte da escolha remoção")
         escolha1 = "remoção"
         registro_fertilizante(msg,escolha1)
 
