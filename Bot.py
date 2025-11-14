@@ -263,21 +263,27 @@ def consulta_epi(msg):
 def registro_epi(compra_msg,escolha1):
     global db, cursor
     user_id = str(compra_msg.from_user.id)
-    escolha = compra_msg.text.strip()
-    escolha_EPI = ""
-    if escolha == "1":
-        escolha_EPI = compra_msg.text.strip()
-        bot.reply_to(compra_msg,"Escolha um numero \n" \
-        "1 ---- Capacete\n" \
-        "2 ---- Luva \n" \
-        "3 ---- Butina\n" \
-        "4 ---- Protetor uricular\n" \
-        "5 ---- Oculos\n")
-        bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
+    #Adição dos botões
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Capacete")
+    btn2 = types.KeyboardButton("Luva")
+    btn3 = types.KeyboardButton("Butina")
+    btn4 = types.KeyboardButton("Protetor uricular")
+    btn5 = types.KeyboardButton("Oculos")
+
+    markup.add(btn1,btn2,btn3,btn4,btn5)
+
+    bot.reply_to(compra_msg,"Escolha um numero \n" \
+    "1 ---- Capacete\n" \
+    "2 ---- Luva \n" \
+    "3 ---- Butina\n" \
+    "4 ---- Protetor uricular\n" \
+    "5 ---- Oculos\n")
+    bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
     
 def quantidade_epi(compra_msg,escolha1,user_id):
     global db, cursor
-    Escolha_epi = compra_msg.text.strip() 
+    Escolha_epi = compra_msg.text
     if escolha1 == "adição":
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
         bot.register_next_step_handler(msg_enviada,somar_produto_epi,Escolha_epi,user_id)
@@ -289,19 +295,19 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
-    if Escolha_epi == "1":
+    if Escolha_epi == "Capacete":
      Escolha_epi = "Capacete"          
 
-    elif Escolha_epi == "2":
+    elif Escolha_epi == "Luva":
         Escolha_epi = "Luva"
 
-    elif Escolha_epi == "3":
+    elif Escolha_epi == "Butina":
         Escolha_epi = "Butina"
       
-    elif Escolha_epi == "4":
+    elif Escolha_epi == "Protetor uricular":
         Escolha_epi = "Protetor uricular"
 
-    elif Escolha_epi == "5":
+    elif Escolha_epi == "Oculos":
         Escolha_epi = "Oculos"
 
     cursor.execute(
