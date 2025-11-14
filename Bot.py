@@ -104,13 +104,13 @@ def escolha_de_qual_consulta(msg):
 def escolha_adiçao_do_estoque(msg):
     escolha = msg.text.strip()
     if escolha == "1":
-        escolha = "adição"
+        escolha1 = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
-        registro_epi(msg)
+        registro_epi(msg,escolha1)
     elif escolha =="2":
-        escolha = "adição"
+        escolha1 = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
-        registro_fertilizante(msg,escolha)
+        registro_fertilizante(msg,escolha1)
 
 def escolha_remover_estoque(msg):
     escolha = msg.text.strip()
