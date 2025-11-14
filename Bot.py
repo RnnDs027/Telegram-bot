@@ -104,8 +104,9 @@ def escolha_de_qual_consulta(msg):
 def escolha_adiçao_do_estoque(msg):
     escolha = msg.text.strip()
     if escolha == "1":
+        escolha = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
-        registro_de_soma_epi(msg)
+        registro_epi(msg)
     elif escolha =="2":
         escolha = "adição"
         bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
