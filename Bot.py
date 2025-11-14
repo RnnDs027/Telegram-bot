@@ -71,9 +71,9 @@ def primeira_pergunta_bot(message):
     #Inicio da interface do usuario
     bot.reply_to(message,"Bem-vindo às consultas da Fazenda" )
     msg = bot.send_message(chat_id,"Escolha um número\n" \
-    " 1 ---- Consultas \n\n" \
-    " 2 ---- Adicionar ao estoque \n\n" \
-    " 3 ---- Remover do estoque",reply_markup=markup)
+    " Consultas \n\n" \
+    " Adicionar ao estoque \n\n" \
+    " Remover do estoque",reply_markup=markup)
     #Mandando a mensagem salva para a proxima função
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
@@ -86,13 +86,15 @@ def escolha_de_avanço(pda):
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("EPI")
         btn2 = types.KeyboardButton("Fertilizantes")
-        markup.add(btn1,btn2)
+        btn3 = types.KeyboardButton("Voltar")
+        markup.add(btn1,btn2,btn3)
 
         #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando nas consultas\n")
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
-      " 1 ---- EPI \n\n" \
-      " 2 ---- Fertilizantes\n\n",reply_markup=markup)
+      " EPI \n\n" \
+      " Fertilizantes\n\n" \
+      " Voltar",reply_markup=markup)
         
         #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
@@ -102,13 +104,15 @@ def escolha_de_avanço(pda):
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("EPI")
         btn2 = types.KeyboardButton("Fertilizantes")
-        markup.add(btn1,btn2)
+        btn3 = types.KeyboardButton("Voltar")
+        markup.add(btn1,btn2,btn3)
 
         #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
         msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
-        " 1 ---- EPI \n\n" \
-        " 2 ---- Fertilizantes\n\n",reply_markup=markup)
+        " EPI \n\n" \
+        " Fertilizantes\n\n" \
+        " Voltar",reply_markup=markup)
 
         #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_compra, escolha_adiçao_do_estoque)
@@ -118,13 +122,15 @@ def escolha_de_avanço(pda):
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("EPI")
         btn2 = types.KeyboardButton("Fertilizantes")
-        markup.add(btn1,btn2)
+        btn3 = types.KeyboardButton("Voltar")
+        markup.add(btn1,btn2,btn3)
 
         #Interface do usuario
         bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
         msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
-        " 1 ---- EPI \n\n" \
-        " 2 ---- Fertilizantes\n\n",reply_markup=markup)
+        " EPI \n\n" \
+        " Fertilizantes\n\n" \
+        " Voltar",reply_markup=markup)
 
         #Mandando a mensagem salva para a proxima função
         bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
@@ -132,22 +138,28 @@ def escolha_de_avanço(pda):
 def escolha_de_qual_consulta(msg):
     escolha = msg.text
     if escolha == "EPI":
-        bot.reply_to(msg,"voces esta entrando na consulta EPI")
+        bot.reply_to(msg,"voce esta entrando na consulta EPI")
         consulta_epi(msg)
     elif escolha =="Fertilizantes":
-        bot.reply_to(msg,"voces esta entrando na consulta Fertilizantes")
+        bot.reply_to(msg,"voce esta entrando na consulta Fertilizantes")
         consulta_fertilizante(msg)
+    elif escolha =="Voltar":
+        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        primeira_pergunta_bot(msg)
 
 def escolha_adiçao_do_estoque(msg):
     escolha = msg.text
     if escolha == "EPI":
         escolha1 = "adição"
-        bot.reply_to(msg,"voces esta entrando na adição de estoque EPI")
+        bot.reply_to(msg,"voce esta entrando na adição de estoque EPI")
         registro_epi(msg,escolha1)
     elif escolha =="Fertilizantes":
         escolha1 = "adição"
-        bot.reply_to(msg,"voces esta entrando na adição de estoque Fertilizante")
+        bot.reply_to(msg,"voce esta entrando na adição de estoque Fertilizante")
         registro_fertilizante(msg,escolha1)
+    elif escolha =="Voltar":
+        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        primeira_pergunta_bot(msg)
 
 def escolha_remover_estoque(msg):
     escolha = msg.text
@@ -158,6 +170,10 @@ def escolha_remover_estoque(msg):
     elif escolha == "Fertilizantes":
         escolha1 = "remoção"
         registro_fertilizante(msg,escolha1)
+
+    elif escolha =="Voltar":
+        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        primeira_pergunta_bot(msg)
 
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
@@ -179,14 +195,17 @@ def registro_fertilizante(msg,escolha1):
     #Adição de botões
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Adubo")
-    markup.add(btn1)
+    btn2 = types.KeyboardButton("Voltar")
+    markup.add(btn1,btn2)
 
     bot.reply_to(msg,"Escolha uma Opção \n" \
-    "1 ---- Adubo\n",reply_markup=markup)
+    " Adubo\n\n" \
+    " Voltar\n\n",reply_markup=markup)
     bot.register_next_step_handler(msg, quantidade_fertilizante, escolha1,user_id)      
 
 def quantidade_fertilizante(msg,escolha1,user_id):
     global db, cursor
+    voltar = msg.text
     Escolha_fertilizante = msg.text.strip() 
     if escolha1 == "adição":
         msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
@@ -194,6 +213,9 @@ def quantidade_fertilizante(msg,escolha1,user_id):
     elif escolha1 == "remoção":
         msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
         bot.register_next_step_handler(msg_enviada,remover_produto_fertilizante,Escolha_fertilizante,user_id)
+    elif voltar =="Voltar":
+        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        primeira_pergunta_bot(msg)
 
 def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
@@ -268,28 +290,33 @@ def registro_epi(compra_msg,escolha1):
     btn3 = types.KeyboardButton("Butina")
     btn4 = types.KeyboardButton("Protetor uricular")
     btn5 = types.KeyboardButton("Oculos")
-    markup.add(btn1,btn2,btn3,btn4,btn5)
+    btn6 = types.KeyboardButton("Voltar")
+    markup.add(btn1,btn2,btn3,btn4,btn5,btn6)
 
     #Interface de usuario
     bot.reply_to(compra_msg,"Escolha um numero \n" \
-    "1 ---- Capacete\n" \
-    "2 ---- Luva \n" \
-    "3 ---- Butina\n" \
-    "4 ---- Protetor uricular\n" \
-    "5 ---- Oculos\n",reply_markup=markup)
+    " Capacete\n" \
+    " Luva \n" \
+    " Butina\n" \
+    " Protetor uricular\n" \
+    " Oculos\n" \
+    "\nVoltar",reply_markup=markup)
 
     #Mandando a mensagem salva para a proxima função
     bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
     
 def quantidade_epi(compra_msg,escolha1,user_id):
     global db, cursor
-    Escolha_epi = compra_msg.text
+    Voltar = compra_msg.text
     if escolha1 == "adição":
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
         bot.register_next_step_handler(msg_enviada,somar_produto_epi,Escolha_epi,user_id)
     elif escolha1 == "remoção":
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja remover do estoque?")
         bot.register_next_step_handler(msg_enviada,remover_produto_epi,Escolha_epi,user_id)
+    elif Voltar =="Voltar":
+        bot.reply_to(msg,"voce esta voltando ao menu principal")
+        primeira_pergunta_bot(msg)
 
 def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
