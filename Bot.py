@@ -35,6 +35,8 @@ if not TOKEN:
    print("ERRO: BOT_TOKEN não encontrado nas variáveis de ambiente! ")
 bot = telebot.TeleBot(TOKEN)
 
+Autorizados = {5007489215}
+
 #INCIO DO CODIGO
 @bot.message_handler(commands=['salvar'])
 def save_note(message):
@@ -80,6 +82,7 @@ def primeira_pergunta_bot(message):
 def escolha_de_avanço(pda):
     texto = pda.text
     chat_id = pda.chat.id
+    user_id = pda.from_user.id
 
     if texto == "Consultas":
         #Adição dos botões
@@ -100,40 +103,50 @@ def escolha_de_avanço(pda):
         bot.register_next_step_handler(msg_consulta, escolha_de_qual_consulta)
         
     elif texto == "Adicionar ao estoque":
-        #Adição dos botões
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        btn1 = types.KeyboardButton("EPI")
-        btn2 = types.KeyboardButton("Fertilizantes")
-        btn3 = types.KeyboardButton("Voltar")
-        markup.add(btn1,btn2,btn3)
 
-        #Interface do usuario
-        bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
-        msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
-        " EPI \n\n" \
-        " Fertilizantes\n\n" \
-        " Voltar",reply_markup=markup)
+        if user_id not in Autorizados:
+            bot.reply_to(pda, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
+            escolha_de_avanço(pda)
+        else:
+            #Adição dos botões
+            markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+            btn1 = types.KeyboardButton("EPI")
+            btn2 = types.KeyboardButton("Fertilizantes")
+            btn3 = types.KeyboardButton("Voltar")
+            markup.add(btn1,btn2,btn3)
 
-        #Mandando a mensagem salva para a proxima função
-        bot.register_next_step_handler(msg_compra, escolha_adiçao_do_estoque)
+            #Interface do usuario
+            bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
+            msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
+            " EPI \n\n" \
+            " Fertilizantes\n\n" \
+            " Voltar",reply_markup=markup)
+
+            #Mandando a mensagem salva para a proxima função
+            bot.register_next_step_handler(msg_compra, escolha_adiçao_do_estoque)
 
     elif texto == "Remover do estoque":
-        #Adição dos botões
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        btn1 = types.KeyboardButton("EPI")
-        btn2 = types.KeyboardButton("Fertilizantes")
-        btn3 = types.KeyboardButton("Voltar")
-        markup.add(btn1,btn2,btn3)
 
-        #Interface do usuario
-        bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
-        msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
-        " EPI \n\n" \
-        " Fertilizantes\n\n" \
-        " Voltar",reply_markup=markup)
+        if user_id not in Autorizados:
+            bot.reply_to(pda, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
+            escolha_de_avanço(pda)
+        else:
+            #Adição dos botões
+            markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+            btn1 = types.KeyboardButton("EPI")
+            btn2 = types.KeyboardButton("Fertilizantes")
+            btn3 = types.KeyboardButton("Voltar")
+            markup.add(btn1,btn2,btn3)
 
-        #Mandando a mensagem salva para a proxima função
-        bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
+            #Interface do usuario
+            bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
+            msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
+            " EPI \n\n" \
+            " Fertilizantes\n\n" \
+            " Voltar",reply_markup=markup)
+
+            #Mandando a mensagem salva para a proxima função
+            bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
 
 def escolha_de_qual_consulta(msg):
     escolha = msg.text
