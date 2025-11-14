@@ -61,7 +61,7 @@ def save_note(message):
 @bot.message_handler(func=lambda message: True)
 def primeira_pergunta_bot(message):
     chat_id = message.chat.id
-    markup = types.ReplyKeyboradMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    markup = types.ReplyKeyboarddMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("1")
     btn2 = types.KeyboardButton("2")
     btn3 = types.KeyboardButton("3")
