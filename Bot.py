@@ -130,7 +130,7 @@ def escolha_de_avanço(pda):
         bot.register_next_step_handler(msg_compra,escolha_remover_estoque)
 
 def escolha_de_qual_consulta(msg):
-    escolha = msg.text.strip()
+    escolha = msg.text
     if escolha == "EPI":
         bot.reply_to(msg,"voces esta entrando na consulta EPI")
         consulta_epi(msg)
@@ -163,25 +163,26 @@ def escolha_remover_estoque(msg):
 #TODAS AS FUNÇOES DE FERTILIZANTE
 def consulta_fertilizante(msg):
     global db,cursor
-    escolha_qual_consulta = msg.text.strip()
-
-    if escolha_qual_consulta == "2":
-        cursor.execute("SELECT * FROM soma_fertilizante")
-        registros = cursor.fetchall()
-        resposta = ("*Itens cadastrados no banco de dados* \n\n")
-        for linha in registros:
-            codigo_item = linha[0]
-            categoria_item = linha[2]
-            quantidade = linha[3]
-            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
-        bot.reply_to(msg,resposta)
+    cursor.execute("SELECT * FROM soma_fertilizante")
+    registros = cursor.fetchall()
+    resposta = ("*Itens cadastrados no banco de dados* \n\n")
+    for linha in registros:
+        codigo_item = linha[0]
+        categoria_item = linha[2]
+        quantidade = linha[3]
+        resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+    bot.reply_to(msg,resposta)
 
 def registro_fertilizante(msg,escolha1):
-    print("Chegou no registro de fertilizante")
     global db, cursor
     user_id = str(msg.from_user.id)
-    bot.reply_to(msg,"Escolha um numero \n" \
-    "1 ---- Adubo\n")
+    #Adição de botões
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Adubo")
+    markup.add(btn1)
+
+    bot.reply_to(msg,"Escolha uma Opção \n" \
+    "1 ---- Adubo\n",reply_markup=markup)
     bot.register_next_step_handler(msg, quantidade_fertilizante, escolha1,user_id)      
 
 def quantidade_fertilizante(msg,escolha1,user_id):
@@ -200,7 +201,7 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     quantidade = int(quantidade_msg.text.strip())
     
 
-    if Escolha_fertilizante == "1":
+    if Escolha_fertilizante == "Adubo":
      Escolha_fertilizante = "Adubo"    
      print("começou a procurar o produto")      
     cursor.execute(
@@ -222,7 +223,7 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
-    if Escolha_fertilizante == "1":
+    if Escolha_fertilizante == "Adubo":
      Escolha_fertilizante = "Adubo"         
     cursor.execute(
          "SELECT quantidade_em_sacos FROM soma_fertilizante WHERE categoria_item = %s AND user_id = %s",
@@ -246,19 +247,16 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
-   global db, cursor
-   escolha_qual_consulta = msg.text.strip()
-
-   if escolha_qual_consulta == "1":
-        cursor.execute("SELECT * FROM pedidos_compras")
-        registros = cursor.fetchall()
-        resposta = ("*Itens cadastrados no banco de dados*\n\n")
-        for linha in registros:
-            codigo_item = linha[0]
-            categoria_item = linha[2]
-            quantidade = linha[3]
-            resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
-        bot.reply_to(msg,resposta)
+    global db, cursor
+    cursor.execute("SELECT * FROM pedidos_compras")
+    registros = cursor.fetchall()
+    resposta = ("*Itens cadastrados no banco de dados*\n\n")
+    for linha in registros:
+        codigo_item = linha[0]
+        categoria_item = linha[2]
+        quantidade = linha[3]
+        resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
+    bot.reply_to(msg,resposta)
 
 def registro_epi(compra_msg,escolha1):
     global db, cursor
@@ -331,19 +329,19 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
 
-    if Escolha_epi == "1":
+    if Escolha_epi == "Capacete":
      Escolha_epi = "Capacete"          
 
-    elif Escolha_epi == "2":
+    elif Escolha_epi == "Luva":
         Escolha_epi = "Luva"
 
-    elif Escolha_epi == "3":
+    elif Escolha_epi == "Butina":
         Escolha_epi = "Butina"
       
-    elif Escolha_epi == "4":
+    elif Escolha_epi == "Protetor uricular":
         Escolha_epi = "Protetor uricular"
 
-    elif Escolha_epi == "5":
+    elif Escolha_epi == "Oculos":
         Escolha_epi = "Oculos"
 
     cursor.execute(
