@@ -191,7 +191,6 @@ def escolha_remover_estoque(msg):
 def somar_novamente(msg,novamente):
     #Soma novamente Fertilizante
     if novamente == 1:
-        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
         #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
@@ -199,6 +198,7 @@ def somar_novamente(msg,novamente):
         markup.add(btn1,btn2)
         somar_novamente = msg.text
         if somar_novamente == "Sim":
+            bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
             escolha1 = "adição"
             registro_fertilizante(msg,escolha1)
         elif somar_novamente == "Não" : 
@@ -213,6 +213,7 @@ def somar_novamente(msg,novamente):
         markup.add(btn1,btn2)
         remover_novamente = msg.text
         if remover_novamente == "Sim":
+            bot.reply_to(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
             escolha1 = "remoção"
             registro_fertilizante(msg,escolha1)
         elif remover_novamente == "Sim": 
@@ -227,6 +228,7 @@ def somar_novamente(msg,novamente):
         markup.add(btn1,btn2)
         somar_novamente = msg.text
         if somar_novamente == "Sim":
+            bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
             escolha1 = "adição"
             registro_epi(msg,escolha1)
         elif somar_novamente == "Não" : 
@@ -241,6 +243,7 @@ def somar_novamente(msg,novamente):
         markup.add(btn1,btn2)
         somar_novamente = msg.text
         if remover_novamente == "Sim":
+            bot.reply_to(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
             escolha1 = "remoção"
             registro_epi(msg,escolha1)
         elif remover_novamente == "Sim": 
