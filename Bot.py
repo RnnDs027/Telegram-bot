@@ -196,7 +196,7 @@ def processar_somar_e_remover_novamente(msg,novamente):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.send_message(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
+        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
         somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente)
     elif novamente == 2 or 4:
           #Adição dos botões
@@ -205,7 +205,7 @@ def processar_somar_e_remover_novamente(msg,novamente):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.send_message(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
+        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
         somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente)
 
 def somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente):
@@ -271,17 +271,19 @@ def registro_fertilizante(msg,escolha1):
 
 def quantidade_fertilizante(msg,escolha1,user_id):
     global db, cursor
-    voltar = msg.text
     Escolha_fertilizante = msg.text.strip() 
-    if escolha1 == "adição":
-        msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
-        bot.register_next_step_handler(msg_enviada,somar_produto_fertilizante,Escolha_fertilizante,user_id)
-    elif escolha1 == "remoção":
-        msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
-        bot.register_next_step_handler(msg_enviada,remover_produto_fertilizante,Escolha_fertilizante,user_id)
-    elif voltar =="Voltar":
-        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+
+    if Escolha_fertilizante =="Voltar":
+        bot.reply_to(msg,"Voce esta voltando ao menu principal")
         primeira_pergunta_bot(msg)
+
+    else:
+        if escolha1 == "adição":
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+            bot.register_next_step_handler(msg_enviada,somar_produto_fertilizante,Escolha_fertilizante,user_id)
+        elif escolha1 == "remoção":
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
+            bot.register_next_step_handler(msg_enviada,remover_produto_fertilizante,Escolha_fertilizante,user_id)
 
 def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
@@ -381,7 +383,6 @@ def quantidade_epi(compra_msg,escolha1,user_id):
     if Escolha_epi =="Voltar":
         bot.reply_to(compra_msg,"voce esta voltando ao menu principal")
         primeira_pergunta_bot(compra_msg)
-    
     else:
         if escolha1 == "adição":
             Escolha_epi = compra_msg.text 
