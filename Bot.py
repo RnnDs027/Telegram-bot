@@ -320,14 +320,17 @@ def registro_epi(compra_msg,escolha1):
     
 def quantidade_epi(compra_msg,escolha1,user_id):
     global db, cursor
-    Voltar = compra_msg.text
+    Escolha_epi = compra_msg.text
+
     if escolha1 == "adição":
+        Escolha_epi = compra_msg.text 
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
         bot.register_next_step_handler(msg_enviada,somar_produto_epi,Escolha_epi,user_id)
     elif escolha1 == "remoção":
+        Escolha_epi = compra_msg.text 
         msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja remover do estoque?")
         bot.register_next_step_handler(msg_enviada,remover_produto_epi,Escolha_epi,user_id)
-    elif Voltar =="Voltar":
+    elif Escolha_epi =="Voltar":
         bot.reply_to(compra_msg,"voce esta voltando ao menu principal")
         primeira_pergunta_bot(compra_msg)
 
