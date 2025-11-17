@@ -197,8 +197,11 @@ def somar_novamente(msg,novamente):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         somar_novamente = msg.text
+
+        #Interface do usuario
+        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
+        
         if somar_novamente == "Sim":
-            bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
             escolha1 = "adição"
             registro_fertilizante(msg,escolha1)
         elif somar_novamente == "Não" : 
@@ -220,17 +223,18 @@ def somar_novamente(msg,novamente):
             primeira_pergunta_bot(msg)
     #Soma novamente EPI
     elif novamente == 3:
-        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
-        #Adição dos botões
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        btn1 = types.KeyboardButton("Sim")
-        btn2 = types.KeyboardButton("Não")
-        markup.add(btn1,btn2)
-        somar_novamente = msg.text
         if somar_novamente == "Sim":
+            #Adição dos botões
+            markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+            btn1 = types.KeyboardButton("Sim")
+            btn2 = types.KeyboardButton("Não")
+            markup.add(btn1,btn2)
+            somar_novamente = msg.text
+
+            #Interface do usuario
             bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
             escolha1 = "adição"
-            registro_epi(msg,escolha1)
+            registro_fertilizante(msg,escolha1)
         elif somar_novamente == "Não" : 
             primeira_pergunta_bot(msg)
     #Remove novamente EPI
