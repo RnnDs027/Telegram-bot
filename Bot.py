@@ -189,7 +189,7 @@ def escolha_remover_estoque(msg):
         primeira_pergunta_bot(msg)
 
 def processar_somar_e_remover_novamente(msg,novamente):
-    if novamente == 1 or 3:
+    if novamente in (1,3):
     #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
@@ -197,8 +197,8 @@ def processar_somar_e_remover_novamente(msg,novamente):
         markup.add(btn1,btn2)
         #Interface do usuario
         somar_ou_remover_novamente = bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
-        somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente)
-    elif novamente == 2 or 4:
+        bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
+    elif novamente in (2,4):
           #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
@@ -206,7 +206,7 @@ def processar_somar_e_remover_novamente(msg,novamente):
         markup.add(btn1,btn2)
         #Interface do usuario
         somar_ou_remover_novamente = bot.reply_to(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
-        somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente)
+        bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
 
 def somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente):
     #Soma novamente Fertilizante
