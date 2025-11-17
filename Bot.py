@@ -188,6 +188,65 @@ def escolha_remover_estoque(msg):
         bot.reply_to(msg,"voce esta Voltando ao menu principal")
         primeira_pergunta_bot(msg)
 
+def somar_novamente(msg,soma_escolha):
+    #Soma novamente EPI
+    if soma_escolha == 1:
+        bot.reply_to("Deseja adicionar algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        somar_novamente = msg.text
+        if somar_novamente == "Sim":
+            escolha1 = "adição"
+            registro_fertilizante(msg,escolha1)
+        else : 
+            primeira_pergunta_bot(msg)
+    #Soma novamente Fertilizante
+    elif soma_escolha == 2:
+        bot.reply_to("Deseja adicionar algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        somar_novamente = msg.text
+        if somar_novamente == "Sim":
+            escolha1 = "adição"
+            registro_epi(msg,escolha1)
+        else : 
+            primeira_pergunta_bot(msg)
+
+def remover_novamente(msg,remover_escolha):
+        #Soma novamente EPI
+    if remover_escolha == 1:
+        bot.reply_to("Deseja remover algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        somar_novamente = msg.text
+        if somar_novamente == "Sim":
+            escolha1 = "remoção"
+            registro_fertilizante(msg,escolha1)
+        else : 
+            primeira_pergunta_bot(msg)
+    #Soma novamente Fertilizante
+    elif remover_escolha == 2:
+        bot.reply_to("Deseja remover algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        somar_novamente = msg.text
+        if somar_novamente == "Sim":
+            escolha1 = "remoção"
+            registro_epi(msg,escolha1)
+        else : 
+            primeira_pergunta_bot(msg)
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
 def consulta_fertilizante(msg):
@@ -253,6 +312,8 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     )
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_fertilizante} foi realizado com sucesso")
+    soma_escolha = 1
+    somar_novamente(quantidade_msg,soma_escolha)
 
 def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
@@ -279,6 +340,7 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
         )
         db.commit()
         bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} foi realizado com sucesso")
+        remover_escolha = 1
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
@@ -367,11 +429,9 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     )
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso")
-    pergunta = bot.reply_to(quantidade_msg, "Deseja adicionar mais algum item ao estoque?\n\n1 - Sim\n2 - Não")
-    bot.register_next_step_handler(pergunta, somar_novamente,user_id)
+    soma_escolha = 2
+    somar_novamente(quantidade_msg,soma_escolha)
     
-    
-
 def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
     quantidade = int(quantidade_msg.text.strip())
@@ -409,15 +469,10 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
         )
         db.commit()
         bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso")
+        remover_escolha = 2
 
-def somar_novamente(msg,user_id):
-    somar_novamente = msg.text
-    if somar_novamente == "1":
-        escolha1 = "adição"
-        quantidade_epi(msg,escolha1,user_id)
-    else:
-        primeira_pergunta_bot()
-    
+
+
 
 
 
