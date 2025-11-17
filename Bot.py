@@ -188,23 +188,37 @@ def escolha_remover_estoque(msg):
         bot.reply_to(msg,"voce esta Voltando ao menu principal")
         primeira_pergunta_bot(msg)
 
-def somar_novamente(msg,soma_escolha):
+def somar_novamente(msg,novamente):
+    #Soma novamente Fertilizante
+    if novamente == 1:
+        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        somar_novamente = msg.text
+        if somar_novamente == "Sim":
+            escolha1 = "adição"
+            registro_fertilizante(msg,escolha1)
+        elif somar_novamente == "Não" : 
+            primeira_pergunta_bot(msg)
+    #Remove novamente Fertilizante
+    elif novamente == 2:
+        bot.reply_to(msg,"Deseja remover algo mais no estoque?")
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        remover_novamente = msg.text
+        if remover_novamente == "Sim":
+            escolha1 = "remoção"
+            registro_fertilizante(msg,escolha1)
+        elif remover_novamente == "Sim": 
+            primeira_pergunta_bot(msg)
     #Soma novamente EPI
-    if soma_escolha == 1:
-        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
-        #Adição dos botões
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        btn1 = types.KeyboardButton("Sim")
-        btn2 = types.KeyboardButton("Não")
-        markup.add(btn1,btn2)
-        somar_novamente = msg.text
-        if somar_novamente == "Sim":
-            escolha1 = "adição"
-            registro_fertilizante(msg,escolha1)
-        else : 
-            primeira_pergunta_bot(msg)
-    #Soma novamente Fertilizante
-    elif soma_escolha == 2:
+    elif novamente == 3:
         bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
         #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -215,12 +229,10 @@ def somar_novamente(msg,soma_escolha):
         if somar_novamente == "Sim":
             escolha1 = "adição"
             registro_epi(msg,escolha1)
-        else : 
+        elif somar_novamente == "Não" : 
             primeira_pergunta_bot(msg)
-
-def remover_novamente(msg,remover_escolha):
-        #Soma novamente EPI
-    if remover_escolha == 1:
+    #Remove novamente EPI
+    elif novamente == 4:
         bot.reply_to("Deseja remover algo mais no estoque?")
         #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -228,24 +240,10 @@ def remover_novamente(msg,remover_escolha):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         somar_novamente = msg.text
-        if somar_novamente == "Sim":
-            escolha1 = "remoção"
-            registro_fertilizante(msg,escolha1)
-        else : 
-            primeira_pergunta_bot(msg)
-    #Soma novamente Fertilizante
-    elif remover_escolha == 2:
-        bot.reply_to("Deseja remover algo mais no estoque?")
-        #Adição dos botões
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        btn1 = types.KeyboardButton("Sim")
-        btn2 = types.KeyboardButton("Não")
-        markup.add(btn1,btn2)
-        somar_novamente = msg.text
-        if somar_novamente == "Sim":
+        if remover_novamente == "Sim":
             escolha1 = "remoção"
             registro_epi(msg,escolha1)
-        else : 
+        elif remover_novamente == "Sim": 
             primeira_pergunta_bot(msg)
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
@@ -312,8 +310,8 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     )
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_fertilizante} foi realizado com sucesso")
-    soma_escolha = 1
-    somar_novamente(quantidade_msg,soma_escolha)
+    novamente = 1
+    somar_novamente(quantidade_msg,novamente)
 
 def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     global db, cursor
@@ -340,7 +338,8 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
         )
         db.commit()
         bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} foi realizado com sucesso")
-        remover_escolha = 1
+        novamente = 2
+        somar_novamente(quantidade_msg,novamente)
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
@@ -429,8 +428,8 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     )
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso")
-    soma_escolha = 2
-    somar_novamente(quantidade_msg,soma_escolha)
+    novamente = 3
+    somar_novamente(quantidade_msg,novamente)
     
 def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
@@ -469,7 +468,8 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
         )
         db.commit()
         bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso")
-        remover_escolha = 2
+        novamente = 4
+        somar_novamente(quantidade_msg,novamente)
 
 
 
