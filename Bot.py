@@ -39,9 +39,9 @@ Autorizados = {5007489215}
 
 #INCIO DO CODIGO
 @bot.message_handler(commands=['salvar'])
-def save_note(message):
-    user_id = message.from_user.id
-    parts = message.text.split(maxsplit=1)
+def save_note(msg):
+    user_id = msg.from_user.id
+    parts = msg.text.split(maxsplit=1)
     if len(parts) > 1:
         text_to_save = parts[1].strip()
         sql = """
@@ -53,16 +53,16 @@ def save_note(message):
     try:
      cursor.execute(sql,valores)
      db.commit()
-     bot.reply_to(message,f"Salvo '{text_to_save}'")
+     bot.reply_to(msg,f"Salvo '{text_to_save}'")
     except Exception as e:
-     bot.reply_to(message, f"Erro ao salvar no banco: {e}")
+     bot.reply_to(msg, f"Erro ao salvar no banco: {e}")
     else:
-        bot.reply_to(message, "Use /salvar <texto para salvar>")
+        bot.reply_to(msg, "Use /salvar <texto para salvar>")
 
 #INICIO DA CHAMADA DO BOT
 @bot.message_handler(func=lambda message: True)
-def primeira_pergunta_bot(message):
-    chat_id = message.chat.id
+def primeira_pergunta_bot(msg):
+    chat_id = msg.chat.id
     #Adição de botões
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Consultas")
@@ -71,18 +71,18 @@ def primeira_pergunta_bot(message):
     markup.add(btn1,btn2,btn3)
 
     #Inicio da interface do usuario
-    bot.reply_to(message,"Bem-vindo às consultas da Fazenda" )
-    msg = bot.send_message(chat_id,"Escolha um número\n" \
+    bot.reply_to(msg,"Bem-vindo às consultas da Fazenda" )
+    msg = bot.send_message(chat_id,"Escolha uma opção:\n" \
     " Consultas \n\n" \
     " Adicionar ao estoque \n\n" \
     " Remover do estoque",reply_markup=markup)
     #Mandando a mensagem salva para a proxima função
     bot.register_next_step_handler(msg,escolha_de_avanço)
 
-def escolha_de_avanço(pda):
-    texto = pda.text
-    chat_id = pda.chat.id
-    user_id = pda.from_user.id
+def escolha_de_avanço(msg):
+    texto = msg.text
+    chat_id = msg.chat.id
+    user_id = msg.from_user.id
 
     if texto == "Consultas":
         #Adição dos botões
@@ -93,7 +93,7 @@ def escolha_de_avanço(pda):
         markup.add(btn1,btn2,btn3)
 
         #Interface do usuario
-        bot.reply_to(pda,"Voce esta entrando nas consultas\n")
+        bot.reply_to(msg,"Você está entrando nas consultas.\n")
         msg_consulta = bot.send_message(chat_id,"O que deseja consultar?\n" \
       " EPI \n\n" \
       " Fertilizantes\n\n" \
@@ -105,8 +105,8 @@ def escolha_de_avanço(pda):
     elif texto == "Adicionar ao estoque":
 
         if user_id not in Autorizados:
-            bot.reply_to(pda, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
-            primeira_pergunta_bot
+            bot.reply_to(msg, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
+            primeira_pergunta_bot(msg)
         else:
             #Adição dos botões
             markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -116,8 +116,8 @@ def escolha_de_avanço(pda):
             markup.add(btn1,btn2,btn3)
 
             #Interface do usuario
-            bot.reply_to(pda,"Voce esta entrando na adição do estoque\n")
-            msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque??\n" \
+            bot.reply_to(msg,"Você está entrando na adição ao estoque.\n")
+            msg_compra = bot.send_message(chat_id,"O que deseja adicionar ao estoque?\n" \
             " EPI \n\n" \
             " Fertilizantes\n\n" \
             " Voltar",reply_markup=markup)
@@ -128,8 +128,9 @@ def escolha_de_avanço(pda):
     elif texto == "Remover do estoque":
 
         if user_id not in Autorizados:
-            bot.reply_to(pda, "⚠️ Você não tem permissão para adicionar itens ao estoque.")
-            escolha_de_avanço(pda)
+            # Corrigi a mensagem aqui pois o usuario clicou em remover, mas o aviso falava "adicionar"
+            bot.reply_to(msg, "⚠️ Você não tem permissão para remover itens do estoque.")
+            escolha_de_avanço(msg)
         else:
             #Adição dos botões
             markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -139,7 +140,7 @@ def escolha_de_avanço(pda):
             markup.add(btn1,btn2,btn3)
 
             #Interface do usuario
-            bot.reply_to(pda,"Voce esta entrando na remoção de produtos do estoque")
+            bot.reply_to(msg,"Você está entrando na remoção de produtos do estoque.")
             msg_compra = bot.send_message(chat_id,"O que deseja remover do estoque?\n\n"
             " EPI \n\n" \
             " Fertilizantes\n\n" \
@@ -151,27 +152,27 @@ def escolha_de_avanço(pda):
 def escolha_de_qual_consulta(msg):
     escolha = msg.text
     if escolha == "EPI":
-        bot.reply_to(msg,"voce esta entrando na consulta EPI")
+        bot.reply_to(msg,"Você está entrando na consulta de EPIs.")
         consulta_epi(msg)
     elif escolha =="Fertilizantes":
-        bot.reply_to(msg,"voce esta entrando na consulta Fertilizantes")
+        bot.reply_to(msg,"Você está entrando na consulta de Fertilizantes.")
         consulta_fertilizante(msg)
     elif escolha =="Voltar":
-        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        bot.reply_to(msg,"Você está voltando ao menu principal.")
         primeira_pergunta_bot(msg)
 
 def escolha_adiçao_do_estoque(msg):
     escolha = msg.text
     if escolha == "EPI":
         escolha1 = "adição"
-        bot.reply_to(msg,"voce esta entrando na adição de estoque EPI")
+        bot.reply_to(msg,"Você está entrando na adição de estoque de EPIs.")
         registro_epi(msg,escolha1)
     elif escolha =="Fertilizantes":
         escolha1 = "adição"
-        bot.reply_to(msg,"voce esta entrando na adição de estoque Fertilizante")
+        bot.reply_to(msg,"Você está entrando na adição de estoque de Fertilizantes.")
         registro_fertilizante(msg,escolha1)
     elif escolha =="Voltar":
-        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        bot.reply_to(msg,"Você está voltando ao menu principal.")
         primeira_pergunta_bot(msg)
 
 def escolha_remover_estoque(msg):
@@ -185,7 +186,7 @@ def escolha_remover_estoque(msg):
         registro_fertilizante(msg,escolha1)
 
     elif escolha =="Voltar":
-        bot.reply_to(msg,"voce esta Voltando ao menu principal")
+        bot.reply_to(msg,"Você está voltando ao menu principal.")
         primeira_pergunta_bot(msg)
 
 def processar_somar_e_remover_novamente(msg,novamente):
@@ -196,7 +197,7 @@ def processar_somar_e_remover_novamente(msg,novamente):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja adicionar algo mais no estoque?",reply_markup=markup)
+        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja adicionar algo mais ao estoque?",reply_markup=markup)
         bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
     elif novamente in (2,4):
           #Adição dos botões
@@ -205,7 +206,7 @@ def processar_somar_e_remover_novamente(msg,novamente):
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja remover algo mais no estoque?",reply_markup=markup)
+        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja remover algo mais do estoque?",reply_markup=markup)
         bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
 
 def somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente):
@@ -264,7 +265,7 @@ def registro_fertilizante(msg,escolha1):
     btn2 = types.KeyboardButton("Voltar")
     markup.add(btn1,btn2)
 
-    bot.reply_to(msg,"Escolha uma Opção \n" \
+    bot.reply_to(msg,"Escolha uma opção: \n" \
     " Adubo\n\n" \
     " Voltar\n\n",reply_markup=markup)
     bot.register_next_step_handler(msg, quantidade_fertilizante, escolha1,user_id)      
@@ -274,21 +275,21 @@ def quantidade_fertilizante(msg,escolha1,user_id):
     Escolha_fertilizante = msg.text.strip() 
 
     if Escolha_fertilizante =="Voltar":
-        bot.reply_to(msg,"Voce esta voltando ao menu principal")
+        bot.reply_to(msg,"Você está voltando ao menu principal.")
         primeira_pergunta_bot(msg)
 
     else:
         if escolha1 == "adição":
-            msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade você deseja adicionar ao estoque?")
             bot.register_next_step_handler(msg_enviada,somar_produto_fertilizante,Escolha_fertilizante,user_id)
         elif escolha1 == "remoção":
-            msg_enviada = bot.reply_to(msg,"Qual a quantidade voce deseja remover do estoque?")
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade você deseja remover do estoque?")
             bot.register_next_step_handler(msg_enviada,remover_produto_fertilizante,Escolha_fertilizante,user_id)
 
-def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
+def somar_produto_fertilizante(msg,Escolha_fertilizante,user_id):
     global db, cursor
     print("Chegou ate aqui normal")
-    quantidade = int(quantidade_msg.text.strip())
+    quantidade = int(msg.text.strip())
     
 
     if Escolha_fertilizante == "Adubo":
@@ -307,13 +308,13 @@ def somar_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
         (nova_quantidade,Escolha_fertilizante,user_id)
     )
     db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_fertilizante} foi realizado com sucesso")
+    bot.reply_to(msg,f"Seu pedido de adição do item {Escolha_fertilizante} foi realizado com sucesso.")
     novamente = 1
-    processar_somar_e_remover_novamente(quantidade_msg,novamente)
+    processar_somar_e_remover_novamente(msg,novamente)
 
-def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
+def remover_produto_fertilizante(msg,Escolha_fertilizante,user_id):
     global db, cursor
-    quantidade = int(quantidade_msg.text.strip())
+    quantidade = int(msg.text.strip())
 
     if Escolha_fertilizante == "Adubo":
      Escolha_fertilizante = "Adubo"         
@@ -325,9 +326,9 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
     quantidade_atual = resultado[0]
     nova_quantidade = quantidade_atual - quantidade
     if nova_quantidade < 0:
-        bot.reply_to(quantidade_msg,"O Estoque não pode ficar negativo. Tente outro valor")
+        bot.reply_to(msg,"O estoque não pode ficar negativo. Tente outro valor.")
         escolha1 = "remoção"
-        bot.register_next_step_handler(quantidade_msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
+        bot.register_next_step_handler(msg,remover_produto_fertilizante,Escolha_fertilizante,user_id)
     else:
         print("começou a atualizar")    
         cursor.execute(
@@ -335,9 +336,9 @@ def remover_produto_fertilizante(quantidade_msg,Escolha_fertilizante,user_id):
             (nova_quantidade,Escolha_fertilizante,user_id)
         )
         db.commit()
-        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_fertilizante} foi realizado com sucesso")
+        bot.reply_to(msg,f"Seu pedido de remoção do item {Escolha_fertilizante} foi realizado com sucesso.")
         novamente = 2
-        processar_somar_e_remover_novamente(quantidade_msg,novamente)
+        processar_somar_e_remover_novamente(msg,novamente)
 
 #TODAS AS FUNÇÕES PARA EPI
 def consulta_epi(msg):
@@ -352,9 +353,9 @@ def consulta_epi(msg):
         resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
     bot.reply_to(msg,resposta)
 
-def registro_epi(compra_msg,escolha1):
+def registro_epi(msg,escolha1):
     global db, cursor
-    user_id = str(compra_msg.from_user.id)
+    user_id = str(msg.from_user.id)
     #Adição dos botões
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton("Capacete")
@@ -366,7 +367,7 @@ def registro_epi(compra_msg,escolha1):
     markup.add(btn1,btn2,btn3,btn4,btn5,btn6)
 
     #Interface de usuario
-    bot.reply_to(compra_msg,"Escolha um numero \n" \
+    bot.reply_to(msg,"Escolha um número: \n" \
     " Capacete\n" \
     " Luva \n" \
     " Butina\n" \
@@ -375,42 +376,27 @@ def registro_epi(compra_msg,escolha1):
     "\nVoltar",reply_markup=markup)
 
     #Mandando a mensagem salva para a proxima função
-    bot.register_next_step_handler(compra_msg, quantidade_epi,escolha1, user_id) 
+    bot.register_next_step_handler(msg, quantidade_epi,escolha1, user_id) 
     
-def quantidade_epi(compra_msg,escolha1,user_id):
+def quantidade_epi(msg,escolha1,user_id):
     global db, cursor
-    Escolha_epi = compra_msg.text
+    Escolha_epi = msg.text
     if Escolha_epi =="Voltar":
-        bot.reply_to(compra_msg,"voce esta voltando ao menu principal")
-        primeira_pergunta_bot(compra_msg)
+        bot.reply_to(msg,"Você está voltando ao menu principal.")
+        primeira_pergunta_bot(msg)
     else:
         if escolha1 == "adição":
-            Escolha_epi = compra_msg.text 
-            msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja adicionar ao estoque?")
+            Escolha_epi = msg.text 
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade você deseja adicionar ao estoque?")
             bot.register_next_step_handler(msg_enviada,somar_produto_epi,Escolha_epi,user_id)
         elif escolha1 == "remoção":
-            Escolha_epi = compra_msg.text 
-            msg_enviada = bot.reply_to(compra_msg,"Qual a quantidade voce deseja remover do estoque?")
+            Escolha_epi = msg.text 
+            msg_enviada = bot.reply_to(msg,"Qual a quantidade você deseja remover do estoque?")
             bot.register_next_step_handler(msg_enviada,remover_produto_epi,Escolha_epi,user_id)
 
-def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
+def somar_produto_epi(msg,Escolha_epi,user_id):
     global db, cursor
-    quantidade = int(quantidade_msg.text.strip())
-
-    if Escolha_epi == "Capacete":
-     Escolha_epi = "Capacete"          
-
-    elif Escolha_epi == "Luva":
-        Escolha_epi = "Luva"
-
-    elif Escolha_epi == "Butina":
-        Escolha_epi = "Butina"
-      
-    elif Escolha_epi == "Protetor uricular":
-        Escolha_epi = "Protetor uricular"
-
-    elif Escolha_epi == "Oculos":
-        Escolha_epi = "Oculos"
+    quantidade = int(msg.text.strip())
 
     cursor.execute(
          "SELECT quantidade FROM pedidos_compras WHERE categoria_item = %s AND user_id = %s",
@@ -425,13 +411,13 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
         (nova_quantidade,Escolha_epi,user_id)
     )
     db.commit()
-    bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso")
+    bot.reply_to(msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso.")
     novamente = 3
-    processar_somar_e_remover_novamente(quantidade_msg,novamente)
+    processar_somar_e_remover_novamente(msg,novamente)
     
-def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
+def remover_produto_epi(msg,Escolha_epi,user_id):
     global db, cursor
-    quantidade = int(quantidade_msg.text.strip())
+    quantidade = int(msg.text.strip())
 
     if Escolha_epi == "Capacete":
      Escolha_epi = "Capacete"          
@@ -456,26 +442,18 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     quantidade_atual = resultado[0]
     nova_quantidade = quantidade_atual - quantidade
     if nova_quantidade < 0:
-        bot.reply_to(quantidade_msg,"O Estoque não pode ficar negativo. Tente outro valor")
+        bot.reply_to(msg,"O estoque não pode ficar negativo. Tente outro valor.")
         escolha1 = "remoção"
-        bot.register_next_step_handler(quantidade_msg,remover_produto_epi,Escolha_epi,user_id)
+        bot.register_next_step_handler(msg,remover_produto_epi,Escolha_epi,user_id)
     else:
         cursor.execute(
             "UPDATE pedidos_compras SET quantidade = %s WHERE  categoria_item = %s AND user_id = %s",
             (nova_quantidade,Escolha_epi,user_id)
         )
         db.commit()
-        bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso")
+        bot.reply_to(msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso.")
         novamente = 4
-        processar_somar_e_remover_novamente(quantidade_msg,novamente)
-
-
-
-
-
-
-
-
+        processar_somar_e_remover_novamente(msg,novamente)
 
 #REPETIÇÃO
 bot.polling()
