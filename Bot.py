@@ -367,6 +367,10 @@ def somar_produto_epi(quantidade_msg,Escolha_epi,user_id):
     )
     db.commit()
     bot.reply_to(quantidade_msg,f"Seu pedido de adição do item {Escolha_epi} foi realizado com sucesso")
+    pergunta = bot.reply_to(quantidade_msg, "Deseja adicionar mais algum item ao estoque?\n\n1 - Sim\n2 - Não")
+    bot.register_next_step_handler(pergunta, somar_novamente,user_id)
+    
+    
 
 def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
     global db, cursor
@@ -406,7 +410,14 @@ def remover_produto_epi(quantidade_msg,Escolha_epi,user_id):
         db.commit()
         bot.reply_to(quantidade_msg,f"Seu pedido de remoção do item {Escolha_epi} foi realizado com sucesso")
 
-
+def somar_novamente(msg,user_id):
+    somar_novamente = msg.text
+    if somar_novamente == "1":
+        escolha1 = "adição"
+        quantidade_epi(msg,escolha1,user_id)
+    else:
+        primeira_pergunta_bot()
+    
 
 
 
