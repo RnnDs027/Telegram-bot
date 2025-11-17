@@ -191,7 +191,7 @@ def escolha_remover_estoque(msg):
 def somar_novamente(msg,soma_escolha):
     #Soma novamente EPI
     if soma_escolha == 1:
-        bot.reply_to("Deseja adicionar algo mais no estoque?")
+        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
         #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
@@ -205,7 +205,7 @@ def somar_novamente(msg,soma_escolha):
             primeira_pergunta_bot(msg)
     #Soma novamente Fertilizante
     elif soma_escolha == 2:
-        bot.reply_to("Deseja adicionar algo mais no estoque?")
+        bot.reply_to(msg,"Deseja adicionar algo mais no estoque?")
         #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
