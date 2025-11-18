@@ -277,7 +277,7 @@ def consulta_fertilizante(msg):
         resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
     bot.reply_to(msg,resposta)
     novamente = 5
-    bot.register_next_step_handler(msg,processar_somar_e_remover_novamente,novamente)
+    processar_somar_e_remover_novamente(novamente)
 
 def registro_fertilizante(msg,escolha1):
     global db, cursor
@@ -376,7 +376,7 @@ def consulta_epi(msg):
         resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
     bot.reply_to(msg,resposta)
     novamente = 6
-    bot.register_next_step_handler(msg,processar_somar_e_remover_novamente,novamente)
+    processar_somar_e_remover_novamente(novamente)
 
 def registro_epi(msg,escolha1):
     global db, cursor
