@@ -255,15 +255,15 @@ def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_cons
     #Consulta Fertilizante
     elif novamente == 5:
         if somar_ou_remover_ou_consultar_novamente == "Sim":
-            escolha_consulta = "Consultas"
-            escolha_de_avanço(escolha_consulta)
+            msg.text = "Consultas"
+            escolha_de_avanço(msg)
         elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
     #Consulta EPI
     elif novamente == 6:
         if somar_ou_remover_ou_consultar_novamente == "Sim":
-            escolha_consulta = "Consultas"
-            escolha_de_avanço(escolha_consulta)
+            msg.text = "Consultas"
+            escolha_de_avanço(msg)
         elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
 
