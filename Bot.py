@@ -191,56 +191,79 @@ def escolha_remover_estoque(msg):
 
 def processar_somar_e_remover_novamente(msg,novamente):
     if novamente in (1,3):
-    #Adição dos botões
+        #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja adicionar algo mais ao estoque?",reply_markup=markup)
-        bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
+        somar_ou_remover_ou_consultar_novamente = bot.reply_to(msg,"Deseja adicionar algo mais ao estoque?",reply_markup=markup)
+        bot.register_next_step_handler(msg,somar_e_remover_e_consultar_novamente,novamente,somar_ou_remover_ou_consultar_novamente)
     elif novamente in (2,4):
-          #Adição dos botões
+        #Adição dos botões
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         btn1 = types.KeyboardButton("Sim")
         btn2 = types.KeyboardButton("Não")
         markup.add(btn1,btn2)
         #Interface do usuario
-        somar_ou_remover_novamente = bot.reply_to(msg,"Deseja remover algo mais do estoque?",reply_markup=markup)
-        bot.register_next_step_handler(msg,somar_e_remover_novamente,novamente,somar_ou_remover_novamente)
+        somar_ou_remover_ou_consultar_novamente = bot.reply_to(msg,"Deseja remover algo mais do estoque?",reply_markup=markup)
+        bot.register_next_step_handler(msg,somar_e_remover_e_consultar_novamente,novamente,somar_ou_remover_ou_consultar_novamente)
+    elif novamente in (5,6):
+        #Adição dos botões
+        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+        btn1 = types.KeyboardButton("Sim")
+        btn2 = types.KeyboardButton("Não")
+        markup.add(btn1,btn2)
+        #Interface do usuario
+        somar_ou_remover_ou_consultar_novamente = bot.reply_to(msg,"Deseja consultar algo mais?",reply_markup=markup)
+        bot.register_next_step_handler(msg,somar_e_remover_e_consultar_novamente,novamente,somar_ou_remover_ou_consultar_novamente)    
 
-def somar_e_remover_novamente(msg,novamente,somar_ou_remover_novamente):
+def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_consultar_novamente):
     #Soma novamente Fertilizante
     if novamente == 1:
-        somar_ou_remover_novamente = msg.text
-        if somar_ou_remover_novamente == "Sim":
+        somar_ou_remover_ou_consultar_novamente = msg.text
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
             escolha1 = "adição"
             registro_fertilizante(msg,escolha1)
-        elif somar_ou_remover_novamente == "Não" : 
+        elif somar_ou_remover_ou_consultar_novamente == "Não" : 
             primeira_pergunta_bot(msg)
     #Remove novamente Fertilizante
     elif novamente == 2:
-        somar_ou_remover_novamente = msg.text
-        if somar_ou_remover_novamente == "Sim":
+        somar_ou_remover_ou_consultar_novamente = msg.text
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
             escolha1 = "remoção"
             registro_fertilizante(msg,escolha1)
-        elif somar_ou_remover_novamente == "Não": 
+        elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
     #Soma novamente EPI
     elif novamente == 3:
-        somar_ou_remover_novamente = msg.text
-        if somar_ou_remover_novamente == "Sim":
+        somar_ou_remover_ou_consultar_novamente = msg.text
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
             escolha1 = "adição"
             registro_epi(msg,escolha1)
-        elif somar_ou_remover_novamente == "Não" : 
+        elif somar_ou_remover_ou_consultar_novamente == "Não" : 
             primeira_pergunta_bot(msg)
     #Remove novamente EPI
     elif novamente == 4:
-        somar_ou_remover_novamente = msg.text
-        if somar_ou_remover_novamente == "Sim":
+        somar_ou_remover_ou_consultar_novamente = msg.text
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
             escolha1 = "remoção"
             registro_epi(msg,escolha1)
-        elif somar_ou_remover_novamente == "Não": 
+        elif somar_ou_remover_ou_consultar_novamente == "Não": 
+            primeira_pergunta_bot(msg)
+    #Consulta Fertilizante
+    elif novamente == 5:
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
+            escolha_consulta = "Fertilizantes"
+            escolha_de_qual_consulta(escolha_consulta)
+        elif somar_ou_remover_ou_consultar_novamente == "Não": 
+            primeira_pergunta_bot(msg)
+    #Consulta EPI
+    elif novamente == 6:
+        if somar_ou_remover_ou_consultar_novamente == "Sim":
+            escolha_consulta = "EPI"
+            escolha_de_qual_consulta(escolha_consulta)
+        elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
 
 #TODAS AS FUNÇOES DE FERTILIZANTE
@@ -255,6 +278,8 @@ def consulta_fertilizante(msg):
         quantidade = linha[3]
         resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
     bot.reply_to(msg,resposta)
+    novamente = 5
+    bot.register_next_step_handler(msg,processar_somar_e_remover_novamente,novamente)
 
 def registro_fertilizante(msg,escolha1):
     global db, cursor
@@ -352,6 +377,8 @@ def consulta_epi(msg):
         quantidade = linha[3]
         resposta = resposta + (f"Id produto - {codigo_item}\n Item - {categoria_item}\n Quantidade - {quantidade}\n\n")
     bot.reply_to(msg,resposta)
+    novamente = 6
+    bot.register_next_step_handler(msg,processar_somar_e_remover_novamente,novamente)
 
 def registro_epi(msg,escolha1):
     global db, cursor
