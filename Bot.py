@@ -255,7 +255,8 @@ def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_cons
     #Consulta Fertilizante
     elif novamente == 5:
         if somar_ou_remover_ou_consultar_novamente == "Sim":
-            escolha_de_qual_consulta(msg)
+            escolha_consulta = "EPI"
+            escolha_de_qual_consulta(escolha_consulta)
         elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
     #Consulta EPI
@@ -393,11 +394,11 @@ def registro_epi(msg,escolha1):
     markup.add(btn1,btn2,btn3,btn4,btn5,btn6)
 
     #Interface de usuario
-    bot.reply_to(msg,"Escolha um número: \n" \
+    bot.reply_to(msg,"Escolha um EPI: \n" \
     " Capacete\n" \
     " Luva \n" \
     " Butina\n" \
-    " Protetor uricular\n" \
+    " Protetor auricular\n" \
     " Oculos\n" \
     "\nVoltar",reply_markup=markup)
 
