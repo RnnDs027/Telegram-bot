@@ -35,6 +35,7 @@ if not TOKEN:
    print("ERRO: BOT_TOKEN não encontrado nas variáveis de ambiente! ")
 bot = telebot.TeleBot(TOKEN)
 
+#AUTORIZADOS A MEXER EM REMOÇÃO E ADIÇÃO
 Autorizados = {5007489215}
 
 #INCIO DO CODIGO
