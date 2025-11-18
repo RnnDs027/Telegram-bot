@@ -255,7 +255,7 @@ def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_cons
     #Consulta Fertilizante
     elif novamente == 5:
         if somar_ou_remover_ou_consultar_novamente == "Sim":
-            escolha_consulta = "EPI"
+            escolha_consulta = "Fertilizantes"
             escolha_de_qual_consulta(escolha_consulta)
         elif somar_ou_remover_ou_consultar_novamente == "Não": 
             primeira_pergunta_bot(msg)
@@ -388,7 +388,7 @@ def registro_epi(msg,escolha1):
     btn1 = types.KeyboardButton("Capacete")
     btn2 = types.KeyboardButton("Luva")
     btn3 = types.KeyboardButton("Butina")
-    btn4 = types.KeyboardButton("Protetor uricular")
+    btn4 = types.KeyboardButton("Protetor auricular")
     btn5 = types.KeyboardButton("Oculos")
     btn6 = types.KeyboardButton("Voltar")
     markup.add(btn1,btn2,btn3,btn4,btn5,btn6)
