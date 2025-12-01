@@ -1,0 +1,18 @@
+Comandos SQL
+
+Criação de table
+
+CREATE TABLE soma_fertilizante (
+    codigo_item INT,
+    categoria_item VARCHAR(255),
+    quantidade INT
+);
+
+
+Inserção de Raw
+INSERT INTO soma_fertilizante (codigo_item, categoria_item, quantidade)
+VALUES (1, 'Adubo', 0);
+
+
+SENHA BANCO DE DADOS
+P9IRuriSEcN4Yy5j

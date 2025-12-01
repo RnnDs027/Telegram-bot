@@ -247,6 +247,7 @@ def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_cons
             primeira_pergunta_bot(msg)
     #Remove novamente EPI
     elif novamente == 4:
+        print("Chegou na parte do SOmar e remover e consultar novamente")
         somar_ou_remover_ou_consultar_novamente = msg.text
         if somar_ou_remover_ou_consultar_novamente == "Sim":
             escolha1 = "remoção"
@@ -256,6 +257,7 @@ def somar_e_remover_e_consultar_novamente(msg,novamente,somar_ou_remover_ou_cons
     #Consulta Fertilizante
     elif novamente == 5:
         if somar_ou_remover_ou_consultar_novamente == "Sim":
+            print("Chegou na parte do SOmar e remover e consultar novamente")
             escolha_consulta = msg.text
             escolha_consulta = "Consultas"
             escolha_de_avanço(escolha_consulta)
